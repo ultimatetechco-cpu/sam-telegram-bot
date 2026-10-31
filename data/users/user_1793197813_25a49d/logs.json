@@ -1,0 +1,14 @@
+[
+  {
+    "timestamp": "2026-10-30 20:05:55",
+    "level": "INFO",
+    "message": "Sent login security verification code to registered email for user @trustonsimardeep",
+    "user_id": "user_1793197813_25a49d"
+  },
+  {
+    "timestamp": "2026-10-30 20:06:20",
+    "level": "INFO",
+    "message": "User @trustonsimardeep logged in successfully with email OTP verification.",
+    "user_id": "user_1793197813_25a49d"
+  }
+]

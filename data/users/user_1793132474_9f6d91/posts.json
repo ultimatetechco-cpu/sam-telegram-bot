@@ -1,0 +1,46 @@
+[
+  {
+    "id": "post_1",
+    "title": "Post #1 (Welcome Announcement)",
+    "html_content": "🔥 <b>Welcome to our exclusive community!</b>\nCheck out the daily updates and announcements 🚀\n<i>Powered by Telegram Automation</i>",
+    "media_path": null,
+    "media_name": null,
+    "has_media": false,
+    "source_chat": null,
+    "source_msg_id": null,
+    "custom_emojis_count": 0,
+    "is_active": true,
+    "assigned_account": "all",
+    "times_posted": 0,
+    "last_used": null,
+    "created_at": "2026-10-28 01:50:35"
+  },
+  {
+    "id": "post_2",
+    "title": "Post #2 (Special Deals & Offers)",
+    "html_content": "💎 <b>Exclusive Deals & VIP Insights!</b>\nDon't miss our latest community promotions and insights ⭐\nJoin the discussion below 👇",
+    "media_path": null,
+    "media_name": null,
+    "has_media": false,
+    "custom_emojis_count": 0,
+    "is_active": true,
+    "assigned_account": "all",
+    "times_posted": 0,
+    "last_used": null,
+    "created_at": "2026-10-28 01:50:35"
+  },
+  {
+    "id": "post_3",
+    "title": "Post #3 (Daily Digest & Tips)",
+    "html_content": "⚡ <b>Daily Quick Digest!</b>\nStay ahead of the game with our verified updates and news 🌟\nFeel free to ask questions in chat!",
+    "media_path": null,
+    "media_name": null,
+    "has_media": false,
+    "custom_emojis_count": 0,
+    "is_active": true,
+    "assigned_account": "all",
+    "times_posted": 0,
+    "last_used": null,
+    "created_at": "2026-10-28 01:50:35"
+  }
+]

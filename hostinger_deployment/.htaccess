@@ -1,0 +1,36 @@
+# ========================================================
+# Hostinger LiteSpeed Web Server Configuration
+# Telegram AutoPost Pro
+# ========================================================
+
+Options -Indexes +FollowSymLinks
+DirectoryIndex index.html index.php
+
+<IfModule mod_headers.c>
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires 0
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Pass Authorization Bearer headers to PHP under LiteSpeed
+    RewriteCond %{HTTP:Authorization} ^(.*)
+    RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+
+    # Route /api/... to api_proxy.php
+    RewriteRule ^api/(.*)$ api_proxy.php?route=$1 [QSA,L]
+    RewriteRule ^api/?$ api_proxy.php [QSA,L]
+
+    # Route /media/... to api_proxy.php for post images/videos
+    RewriteRule ^media/(.*)$ api_proxy.php?route=media/$1 [QSA,L]
+
+    # If the requested file or directory exists physically, serve directly
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Single Page App routing: fallback to index.html
+    RewriteRule ^(.*)$ index.html [L]
+</IfModule>

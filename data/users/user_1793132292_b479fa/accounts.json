@@ -1,0 +1,19 @@
+[
+  {
+    "id": "acc_user_1793132292_b479fa_8643221025",
+    "user_id": "8643221025",
+    "owner_user_id": "user_1793132292_b479fa",
+    "first_name": "Peter",
+    "last_name": "Forex Media Agency",
+    "username": "PeterFOREXMediaAgency",
+    "phone": "+919463266834",
+    "api_id": 38402690,
+    "api_hash": "312e8ec72296e9ae27415de6eb52c0cf",
+    "session_name": "session_user_1793132292_b479fa_8643221025",
+    "is_premium": false,
+    "is_active": true,
+    "status": "Ready",
+    "last_used": null,
+    "flood_wait_until": null
+  }
+]

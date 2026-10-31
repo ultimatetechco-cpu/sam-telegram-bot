@@ -1,0 +1,602 @@
+[
+  {
+    "timestamp": "2026-10-28 23:41:49",
+    "level": "INFO",
+    "message": "Saved campaign post: 'Post #3 (Daily Digest & Tips)' (3D Emojis: 0)",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:42:37",
+    "level": "INFO",
+    "message": "Saved campaign post: 'Post #4 (Campaign)' (3D Emojis: 0)",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:43:06",
+    "level": "INFO",
+    "message": "Config updated: Interval 2.0 hours, Delay 10-25s, Post Rotation: RANDOM",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:43:20",
+    "level": "INFO",
+    "message": "Config updated: Interval 2.0 hours, Delay 10-25s, Post Rotation: RANDOM",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:43:29",
+    "level": "INFO",
+    "message": "=== Telegram Posting Automation Scheduler STARTED for tenant [user_1793132292_b479fa] ===",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:43:29",
+    "level": "INFO",
+    "message": "Scheduler waiting for next cycle at 01:43:29 (in 120 minutes)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:43:31",
+    "level": "INFO",
+    "message": "Manual 'Post Now' triggered by user.",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:43:31",
+    "level": "INFO",
+    "message": "Selected Account Active: Broadcasting exclusively via 'Peter (@PeterFOREXMediaAgency)'",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:43:31",
+    "level": "INFO",
+    "message": "=== Starting Manual Broadcast ===",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:43:31",
+    "level": "INFO",
+    "message": "Targets: 30 groups | Active Post Pool: 4 | Sender: Single Account: 'Peter' (@PeterFOREXMediaAgency) | Post Rotation: RANDOM (per_group)",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:43:31",
+    "level": "INFO",
+    "message": "[1/30] Sending 'Post #4 (Campaign)' to 'piratecpaworld' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:43:33",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #4 (Campaign)' to piratecpaworld!",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:43:33",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 14s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:43:47",
+    "level": "INFO",
+    "message": "[2/30] Sending 'Post #1 (Welcome Announcement)' to 'forexcryotpsolutions' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:43:48",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #1 (Welcome Announcement)' to forexcryotpsolutions!",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:43:48",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 15s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:44:03",
+    "level": "INFO",
+    "message": "[3/30] Sending 'Post #1 (Welcome Announcement)' to 'myadnote' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:44:03",
+    "level": "WARNING",
+    "message": "Cannot post to myadnote: Write forbidden or restricted in group.",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:44:04",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 13s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:44:17",
+    "level": "INFO",
+    "message": "[4/30] Sending 'Post #1 (Welcome Announcement)' to 'blackhataffiliates' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:44:19",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #1 (Welcome Announcement)' to blackhataffiliates!",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:44:19",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 24s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:44:43",
+    "level": "INFO",
+    "message": "[5/30] Sending 'Post #3 (Daily Digest & Tips)' to 'CryptoForexIndustry' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:44:44",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #3 (Daily Digest & Tips)' to CryptoForexIndustry!",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:44:44",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 18s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:45:02",
+    "level": "INFO",
+    "message": "[6/30] Sending 'Post #1 (Welcome Announcement)' to 'wiseaffiliate' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:45:04",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #1 (Welcome Announcement)' to wiseaffiliate!",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:45:04",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 17s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:45:21",
+    "level": "INFO",
+    "message": "[7/30] Sending 'Post #2 (Special Deals & Offers)' to 'trafficforyou' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:45:23",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #2 (Special Deals & Offers)' to trafficforyou!",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:45:23",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 12s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:45:35",
+    "level": "INFO",
+    "message": "[8/30] Sending 'Post #2 (Special Deals & Offers)' to 'affiliatesmarketing' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:45:37",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #2 (Special Deals & Offers)' to affiliatesmarketing!",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:45:37",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 15s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:45:52",
+    "level": "INFO",
+    "message": "[9/30] Sending 'Post #1 (Welcome Announcement)' to 'royalaffiliates' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:45:52",
+    "level": "WARNING",
+    "message": "Cannot post to royalaffiliates: Write forbidden or restricted in group.",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:45:52",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 17s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:46:09",
+    "level": "INFO",
+    "message": "[10/30] Sending 'Post #1 (Welcome Announcement)' to 'IntenseAdsGroup' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:46:11",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #1 (Welcome Announcement)' to IntenseAdsGroup!",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:46:11",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 16s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:46:27",
+    "level": "INFO",
+    "message": "[11/30] Sending 'Post #1 (Welcome Announcement)' to 'TheACDgroup' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:46:27",
+    "level": "WARNING",
+    "message": "Cannot post to TheACDgroup: Write forbidden or restricted in group.",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:46:27",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 15s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:46:42",
+    "level": "INFO",
+    "message": "[12/30] Sending 'Post #3 (Daily Digest & Tips)' to 'dark_side_affiliate_offers' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:46:43",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #3 (Daily Digest & Tips)' to dark_side_affiliate_offers!",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:46:43",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 15s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:46:58",
+    "level": "INFO",
+    "message": "[13/30] Sending 'Post #3 (Daily Digest & Tips)' to 'black_white_shop' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:46:58",
+    "level": "WARNING",
+    "message": "Cannot post to black_white_shop: Write forbidden or restricted in group.",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:46:58",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 21s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:47:19",
+    "level": "INFO",
+    "message": "[14/30] Sending 'Post #2 (Special Deals & Offers)' to 'FxCryptoTraffic' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:47:20",
+    "level": "WARNING",
+    "message": "Cannot post to FxCryptoTraffic: Write forbidden or restricted in group.",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:47:20",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 21s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:47:41",
+    "level": "INFO",
+    "message": "[15/30] Sending 'Post #1 (Welcome Announcement)' to 'CryptoForexJobs' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:47:42",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #1 (Welcome Announcement)' to CryptoForexJobs!",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:47:42",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 10s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:47:52",
+    "level": "INFO",
+    "message": "[16/30] Sending 'Post #4 (Campaign)' to 'AerodynamicV1_Promotion' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:47:52",
+    "level": "WARNING",
+    "message": "Cannot post to AerodynamicV1_Promotion: Write forbidden or restricted in group.",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:47:52",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 11s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:48:03",
+    "level": "INFO",
+    "message": "[17/30] Sending 'Post #2 (Special Deals & Offers)' to 'v_miami' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:48:03",
+    "level": "WARNING",
+    "message": "Cannot post to v_miami: Write forbidden or restricted in group.",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:48:03",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 14s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:48:17",
+    "level": "INFO",
+    "message": "[18/30] Sending 'Post #3 (Daily Digest & Tips)' to 'adskiy_google' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:49:05",
+    "level": "WARNING",
+    "message": "Cannot post to adskiy_google: Write forbidden or restricted in group.",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:49:05",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 18s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:49:23",
+    "level": "INFO",
+    "message": "[19/30] Sending 'Post #3 (Daily Digest & Tips)' to 'affiliate_marketing_eng' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:49:23",
+    "level": "WARNING",
+    "message": "Cannot post to affiliate_marketing_eng: Write forbidden or restricted in group.",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:49:23",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 23s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:49:46",
+    "level": "INFO",
+    "message": "[20/30] Sending 'Post #1 (Welcome Announcement)' to 'rabota_kiev_vacancy' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:49:47",
+    "level": "WARNING",
+    "message": "Cannot post to rabota_kiev_vacancy: Write forbidden or restricted in group.",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:49:47",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 17s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:50:04",
+    "level": "INFO",
+    "message": "[21/30] Sending 'Post #3 (Daily Digest & Tips)' to 'arbitrazhBHT' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:50:04",
+    "level": "ERROR",
+    "message": "Failed posting to arbitrazhBHT: RPCError 403: ALLOW_PAYMENT_REQUIRED_10 (caused by SendMessageRequest)",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:50:04",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 22s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:50:26",
+    "level": "INFO",
+    "message": "[22/30] Sending 'Post #1 (Welcome Announcement)' to 'traffichere' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:50:27",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #1 (Welcome Announcement)' to traffichere!",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:50:27",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 17s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:50:44",
+    "level": "INFO",
+    "message": "[23/30] Sending 'Post #3 (Daily Digest & Tips)' to 'myadlist' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:50:45",
+    "level": "WARNING",
+    "message": "Cannot post to myadlist: Write forbidden or restricted in group.",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:50:45",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 21s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:51:06",
+    "level": "INFO",
+    "message": "[24/30] Sending 'Post #1 (Welcome Announcement)' to 'myadru' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:51:06",
+    "level": "WARNING",
+    "message": "Cannot post to myadru: Write forbidden or restricted in group.",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:51:06",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 10s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:51:16",
+    "level": "INFO",
+    "message": "[25/30] Sending 'Post #2 (Special Deals & Offers)' to 'IsraelSmartBuy' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:51:17",
+    "level": "WARNING",
+    "message": "Cannot post to IsraelSmartBuy: Write forbidden or restricted in group.",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:51:17",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 25s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:51:42",
+    "level": "INFO",
+    "message": "[26/30] Sending 'Post #4 (Campaign)' to 'Tiger_Calling_Meman_Tiger' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:51:42",
+    "level": "WARNING",
+    "message": "Cannot post to Tiger_Calling_Meman_Tiger: Write forbidden or restricted in group.",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:51:42",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 17s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:51:59",
+    "level": "INFO",
+    "message": "[27/30] Sending 'Post #1 (Welcome Announcement)' to 'blogging_goal' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:52:00",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #1 (Welcome Announcement)' to blogging_goal!",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:52:00",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 16s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:52:16",
+    "level": "INFO",
+    "message": "[28/30] Sending 'Post #3 (Daily Digest & Tips)' to 'paypercallaffiliates' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:52:17",
+    "level": "WARNING",
+    "message": "Cannot post to paypercallaffiliates: Write forbidden or restricted in group.",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:52:17",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 23s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:52:40",
+    "level": "INFO",
+    "message": "[29/30] Sending 'Post #4 (Campaign)' to 'telecallerjob7' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:52:40",
+    "level": "WARNING",
+    "message": "Cannot post to telecallerjob7: Write forbidden or restricted in group.",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:52:40",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 12s before next group...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:52:52",
+    "level": "INFO",
+    "message": "[30/30] Sending 'Post #3 (Daily Digest & Tips)' to 'adsensebuyandsell38' via Peter (@PeterFOREXMediaAgency)...",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:52:52",
+    "level": "WARNING",
+    "message": "Cannot post to adsensebuyandsell38: Write forbidden or restricted in group.",
+    "user_id": "user_1793132292_b479fa"
+  },
+  {
+    "timestamp": "2026-10-28 23:52:52",
+    "level": "SUCCESS",
+    "message": "=== Broadcast Finished: 12 Sent | 18 Failed ===",
+    "user_id": "user_1793132292_b479fa"
+  }
+]

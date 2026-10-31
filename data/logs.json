@@ -1,0 +1,602 @@
+[
+  {
+    "timestamp": "2026-10-31 18:32:41",
+    "level": "INFO",
+    "message": "[37/69] Sending 'Post #6 (Campaign)' to 'blogging_goal' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:32:42",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #6 (Campaign)' to blogging_goal!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:32:42",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 9s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:32:51",
+    "level": "INFO",
+    "message": "[38/69] Sending 'Post #5 (Campaign)' to 'CryptoFXConnect' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:32:53",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #5 (Campaign)' to CryptoFXConnect!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:32:53",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 7s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:33:00",
+    "level": "INFO",
+    "message": "[39/69] Sending 'Post #6 (Campaign)' to 'googleadsenseload' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:33:01",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #6 (Campaign)' to googleadsenseload!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:33:01",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 8s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:33:09",
+    "level": "INFO",
+    "message": "[40/69] Sending 'Post #5 (Campaign)' to 'AffiliaTerritory' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:33:09",
+    "level": "WARNING",
+    "message": "Cannot post to AffiliaTerritory: Write forbidden or restricted in group.",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:33:10",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 7s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:33:17",
+    "level": "INFO",
+    "message": "[41/69] Sending 'Post #6 (Campaign)' to 'FXB2B' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:33:29",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #6 (Campaign)' to FXB2B!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:33:29",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 6s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:33:35",
+    "level": "INFO",
+    "message": "[42/69] Sending 'Post #5 (Campaign)' to 'ExclusiveFXsecret' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:33:37",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #5 (Campaign)' to ExclusiveFXsecret!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:33:37",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 9s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:33:46",
+    "level": "INFO",
+    "message": "[43/69] Sending 'Post #6 (Campaign)' to 'AerodynamicV1_Promotion' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:33:47",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #6 (Campaign)' to AerodynamicV1_Promotion!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:33:47",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 9s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:33:56",
+    "level": "INFO",
+    "message": "[44/69] Sending 'Post #5 (Campaign)' to 'B2B_FX' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:33:57",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #5 (Campaign)' to B2B_FX!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:33:57",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 8s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:34:05",
+    "level": "INFO",
+    "message": "[45/69] Sending 'Post #6 (Campaign)' to 'youtubeadsenseresellbuy' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:34:06",
+    "level": "ERROR",
+    "message": "Failed posting to youtubeadsenseresellbuy: The chat is restricted and cannot be used in that request (caused by SendMessageRequest)",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:34:06",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 10s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:34:16",
+    "level": "INFO",
+    "message": "[46/69] Sending 'Post #5 (Campaign)' to 'Affiliatewith' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:34:16",
+    "level": "ERROR",
+    "message": "Failed posting to Affiliatewith: Nobody is using this username or the username is unacceptable (caused by ResolveUsernameRequest)",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:34:16",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 10s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:34:26",
+    "level": "INFO",
+    "message": "[47/69] Sending 'Post #6 (Campaign)' to 'thegodsforexcrypto' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:34:27",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #6 (Campaign)' to thegodsforexcrypto!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:34:27",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 9s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:34:36",
+    "level": "INFO",
+    "message": "[48/69] Sending 'Post #5 (Campaign)' to 'pirate_tutorials_officiall' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:34:37",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #5 (Campaign)' to pirate_tutorials_officiall!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:34:37",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 9s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:34:46",
+    "level": "INFO",
+    "message": "[49/69] Sending 'Post #6 (Campaign)' to 'cardingopkingdom' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:34:47",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #6 (Campaign)' to cardingopkingdom!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:34:47",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 9s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:34:56",
+    "level": "INFO",
+    "message": "[50/69] Sending 'Post #5 (Campaign)' to 'forexcrypto_leads_traffic' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:34:56",
+    "level": "ERROR",
+    "message": "Failed posting to forexcrypto_leads_traffic: No user has \"forexcrypto_leads_traffic\" as username",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:34:56",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 10s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:35:06",
+    "level": "INFO",
+    "message": "[51/69] Sending 'Post #6 (Campaign)' to 'goBlackHat Market | Facebook' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:35:06",
+    "level": "ERROR",
+    "message": "Failed posting to goBlackHat Market | Facebook: Cannot find any entity corresponding to \"@goBlackHat Market | Facebook\"",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:35:07",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 7s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:35:14",
+    "level": "INFO",
+    "message": "[52/69] Sending 'Post #5 (Campaign)' to '💰Finance | Forex & Crypto Solu' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:35:14",
+    "level": "ERROR",
+    "message": "Failed posting to 💰Finance | Forex & Crypto Solu: Cannot find any entity corresponding to \"@💰Finance | Forex & Crypto Solu\"",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:35:14",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 9s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:35:23",
+    "level": "INFO",
+    "message": "[53/69] Sending 'Post #6 (Campaign)' to 'myadnote' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:35:24",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #6 (Campaign)' to myadnote!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:35:24",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 10s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:35:34",
+    "level": "INFO",
+    "message": "[54/69] Sending 'Post #5 (Campaign)' to 'trafficforyou' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:35:35",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #5 (Campaign)' to trafficforyou!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:35:35",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 7s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:35:42",
+    "level": "INFO",
+    "message": "[55/69] Sending 'Post #6 (Campaign)' to 'affiliatesmarketing' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:35:44",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #6 (Campaign)' to affiliatesmarketing!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:35:44",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 8s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:35:52",
+    "level": "INFO",
+    "message": "[56/69] Sending 'Post #5 (Campaign)' to 'royalaffiliates' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:35:55",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #5 (Campaign)' to royalaffiliates!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:35:55",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 5s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:00",
+    "level": "INFO",
+    "message": "[57/69] Sending 'Post #6 (Campaign)' to 'TheACDgroup' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:01",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #6 (Campaign)' to TheACDgroup!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:01",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 6s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:07",
+    "level": "INFO",
+    "message": "[58/69] Sending 'Post #5 (Campaign)' to 'black_white_shop' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:08",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #5 (Campaign)' to black_white_shop!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:08",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 9s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:17",
+    "level": "INFO",
+    "message": "[59/69] Sending 'Post #6 (Campaign)' to 'FxCryptoTraffic' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:19",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #6 (Campaign)' to FxCryptoTraffic!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:19",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 8s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:27",
+    "level": "INFO",
+    "message": "[60/69] Sending 'Post #5 (Campaign)' to 'v_miami' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:28",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #5 (Campaign)' to v_miami!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:28",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 8s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:36",
+    "level": "INFO",
+    "message": "[61/69] Sending 'Post #6 (Campaign)' to 'adskiy_google' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:36",
+    "level": "WARNING",
+    "message": "Cannot post to adskiy_google: Write forbidden or restricted in group.",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:36",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 10s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:46",
+    "level": "INFO",
+    "message": "[62/69] Sending 'Post #5 (Campaign)' to 'affiliate_marketing_eng' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:48",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #5 (Campaign)' to affiliate_marketing_eng!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:48",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 9s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:57",
+    "level": "INFO",
+    "message": "[63/69] Sending 'Post #6 (Campaign)' to 'rabota_kiev_vacancy' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:57",
+    "level": "WARNING",
+    "message": "Cannot post to rabota_kiev_vacancy: Write forbidden or restricted in group.",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:36:57",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 6s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:37:03",
+    "level": "INFO",
+    "message": "[64/69] Sending 'Post #5 (Campaign)' to 'myadlist' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:37:04",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #5 (Campaign)' to myadlist!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:37:04",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 10s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:37:14",
+    "level": "INFO",
+    "message": "[65/69] Sending 'Post #6 (Campaign)' to 'IsraelSmartBuy' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:37:15",
+    "level": "WARNING",
+    "message": "Cannot post to IsraelSmartBuy: Write forbidden or restricted in group.",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:37:15",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 5s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:37:20",
+    "level": "INFO",
+    "message": "[66/69] Sending 'Post #5 (Campaign)' to 'Tiger_Calling_Meman_Tiger' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:37:20",
+    "level": "WARNING",
+    "message": "Cannot post to Tiger_Calling_Meman_Tiger: Write forbidden or restricted in group.",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:37:20",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 6s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:37:26",
+    "level": "INFO",
+    "message": "[67/69] Sending 'Post #6 (Campaign)' to 'paypercallaffiliates' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:37:27",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #6 (Campaign)' to paypercallaffiliates!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:37:27",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 6s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:37:33",
+    "level": "INFO",
+    "message": "[68/69] Sending 'Post #5 (Campaign)' to 'telecallerjob7' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:37:34",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #5 (Campaign)' to telecallerjob7!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:37:34",
+    "level": "INFO",
+    "message": "Anti-flood pause: waiting 5s before next group...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:37:39",
+    "level": "INFO",
+    "message": "[69/69] Sending 'Post #6 (Campaign)' to 'adsensebuyandsell38' via Simardeep SEO Expert ! Business Growth (@ORMSEObexpert)...",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:37:40",
+    "level": "SUCCESS",
+    "message": "Successfully posted 'Post #6 (Campaign)' to adsensebuyandsell38!",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:37:40",
+    "level": "SUCCESS",
+    "message": "=== Broadcast Finished: 41 Sent | 28 Failed ===",
+    "user_id": "user_admin"
+  },
+  {
+    "timestamp": "2026-10-31 18:37:40",
+    "level": "INFO",
+    "message": "Scheduler waiting for next cycle at 21:37:40 (in 180 minutes)...",
+    "user_id": "user_admin"
+  }
+]

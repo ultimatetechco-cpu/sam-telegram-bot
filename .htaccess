@@ -1,0 +1,9 @@
+# ========================================================
+# cPanel Reverse Proxy .htaccess (Alternative Method)
+# For running `python main.py` in background on port 8080
+# ========================================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(.*)$ http://127.0.0.1:8080/$1 [P,L]
+</IfModule>

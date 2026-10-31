@@ -1,0 +1,17 @@
+# Binaries & Archives
+cloudflared.exe
+*.zip
+*.log
+
+# Python cache & venv
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.venv/
+env/
+ho/
+
+# Session journals
+*.session-journal

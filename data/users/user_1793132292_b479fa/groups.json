@@ -1,0 +1,212 @@
+[
+  {
+    "target": "piratecpaworld",
+    "status": "Success",
+    "last_posted": "2026-10-28 23:43:33",
+    "last_result": "Sent: Post #4 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "forexcryotpsolutions",
+    "status": "Success",
+    "last_posted": "2026-10-28 23:43:48",
+    "last_result": "Sent: Post #1 (Welcome Announcement)",
+    "fail_count": 0
+  },
+  {
+    "target": "myadnote",
+    "status": "Restricted",
+    "last_posted": "2026-10-28 23:44:04",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 1
+  },
+  {
+    "target": "blackhataffiliates",
+    "status": "Success",
+    "last_posted": "2026-10-28 23:44:19",
+    "last_result": "Sent: Post #1 (Welcome Announcement)",
+    "fail_count": 0
+  },
+  {
+    "target": "CryptoForexIndustry",
+    "status": "Success",
+    "last_posted": "2026-10-28 23:44:44",
+    "last_result": "Sent: Post #3 (Daily Digest & Tips)",
+    "fail_count": 0
+  },
+  {
+    "target": "wiseaffiliate",
+    "status": "Success",
+    "last_posted": "2026-10-28 23:45:04",
+    "last_result": "Sent: Post #1 (Welcome Announcement)",
+    "fail_count": 0
+  },
+  {
+    "target": "trafficforyou",
+    "status": "Success",
+    "last_posted": "2026-10-28 23:45:23",
+    "last_result": "Sent: Post #2 (Special Deals & Offers)",
+    "fail_count": 0
+  },
+  {
+    "target": "affiliatesmarketing",
+    "status": "Success",
+    "last_posted": "2026-10-28 23:45:37",
+    "last_result": "Sent: Post #2 (Special Deals & Offers)",
+    "fail_count": 0
+  },
+  {
+    "target": "royalaffiliates",
+    "status": "Restricted",
+    "last_posted": "2026-10-28 23:45:52",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 1
+  },
+  {
+    "target": "IntenseAdsGroup",
+    "status": "Success",
+    "last_posted": "2026-10-28 23:46:11",
+    "last_result": "Sent: Post #1 (Welcome Announcement)",
+    "fail_count": 0
+  },
+  {
+    "target": "TheACDgroup",
+    "status": "Restricted",
+    "last_posted": "2026-10-28 23:46:27",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 1
+  },
+  {
+    "target": "dark_side_affiliate_offers",
+    "status": "Success",
+    "last_posted": "2026-10-28 23:46:43",
+    "last_result": "Sent: Post #3 (Daily Digest & Tips)",
+    "fail_count": 0
+  },
+  {
+    "target": "black_white_shop",
+    "status": "Restricted",
+    "last_posted": "2026-10-28 23:46:58",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 1
+  },
+  {
+    "target": "FxCryptoTraffic",
+    "status": "Restricted",
+    "last_posted": "2026-10-28 23:47:20",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 1
+  },
+  {
+    "target": "CryptoForexJobs",
+    "status": "Success",
+    "last_posted": "2026-10-28 23:47:42",
+    "last_result": "Sent: Post #1 (Welcome Announcement)",
+    "fail_count": 0
+  },
+  {
+    "target": "AerodynamicV1_Promotion",
+    "status": "Restricted",
+    "last_posted": "2026-10-28 23:47:52",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 1
+  },
+  {
+    "target": "v_miami",
+    "status": "Restricted",
+    "last_posted": "2026-10-28 23:48:03",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 1
+  },
+  {
+    "target": "adskiy_google",
+    "status": "Restricted",
+    "last_posted": "2026-10-28 23:49:05",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 1
+  },
+  {
+    "target": "affiliate_marketing_eng",
+    "status": "Restricted",
+    "last_posted": "2026-10-28 23:49:23",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 1
+  },
+  {
+    "target": "rabota_kiev_vacancy",
+    "status": "Restricted",
+    "last_posted": "2026-10-28 23:49:47",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 1
+  },
+  {
+    "target": "arbitrazhBHT",
+    "status": "Failed",
+    "last_posted": "2026-10-28 23:50:04",
+    "last_result": "RPCError 403: ALLOW_PAYMENT_REQUIRED_10 (caused by SendMessageRequest)",
+    "fail_count": 1
+  },
+  {
+    "target": "traffichere",
+    "status": "Success",
+    "last_posted": "2026-10-28 23:50:27",
+    "last_result": "Sent: Post #1 (Welcome Announcement)",
+    "fail_count": 0
+  },
+  {
+    "target": "myadlist",
+    "status": "Restricted",
+    "last_posted": "2026-10-28 23:50:45",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 1
+  },
+  {
+    "target": "myadru",
+    "status": "Restricted",
+    "last_posted": "2026-10-28 23:51:06",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 1
+  },
+  {
+    "target": "IsraelSmartBuy",
+    "status": "Restricted",
+    "last_posted": "2026-10-28 23:51:17",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 1
+  },
+  {
+    "target": "Tiger_Calling_Meman_Tiger",
+    "status": "Restricted",
+    "last_posted": "2026-10-28 23:51:42",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 1
+  },
+  {
+    "target": "blogging_goal",
+    "status": "Success",
+    "last_posted": "2026-10-28 23:52:00",
+    "last_result": "Sent: Post #1 (Welcome Announcement)",
+    "fail_count": 0
+  },
+  {
+    "target": "paypercallaffiliates",
+    "status": "Restricted",
+    "last_posted": "2026-10-28 23:52:17",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 1
+  },
+  {
+    "target": "telecallerjob7",
+    "status": "Restricted",
+    "last_posted": "2026-10-28 23:52:40",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 1
+  },
+  {
+    "target": "adsensebuyandsell38",
+    "status": "Restricted",
+    "last_posted": "2026-10-28 23:52:52",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 1
+  }
+]

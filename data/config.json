@@ -1,0 +1,17 @@
+{
+  "interval_value": 3.0,
+  "interval_unit": "hours",
+  "random_delay_min": 5,
+  "random_delay_max": 10,
+  "auto_join_groups": true,
+  "account_rotation": "round_robin",
+  "selected_account": "acc_8047637445",
+  "selected_posts": [
+    "post_1792477724201",
+    "post_1792480686208"
+  ],
+  "post_rotation_mode": "sequential",
+  "post_selection_scope": "per_group",
+  "web_port": 8080,
+  "web_host": "0.0.0.0"
+}

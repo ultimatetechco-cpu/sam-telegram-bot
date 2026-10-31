@@ -1,0 +1,485 @@
+[
+  {
+    "target": "affilliatemarketingworld",
+    "status": "Failed",
+    "last_posted": "2026-10-31 18:27:29",
+    "last_result": "Nobody is using this username or the username is unacceptable (caused by ResolveUsernameRequest)",
+    "fail_count": 42
+  },
+  {
+    "target": "facebookadssolution_wefunagency",
+    "status": "Invalid",
+    "last_posted": "2026-10-31 18:27:38",
+    "last_result": "The channel specified is private and you lack permission to access it. Another reason may be that you were banned from it (caused by SendMessageRequest)",
+    "fail_count": 42
+  },
+  {
+    "target": "traffic001",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:27:47",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "blackhataffiliates",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:27:54",
+    "last_result": "Sent: Post #5 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "piratecpaworld",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:28:10",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "arbitrazh_traficca",
+    "status": "Failed",
+    "last_posted": "2026-10-31 18:28:17",
+    "last_result": "Nobody is using this username or the username is unacceptable (caused by ResolveUsernameRequest)",
+    "fail_count": 42
+  },
+  {
+    "target": "LeadsAreUs",
+    "status": "Failed",
+    "last_posted": "2026-10-31 18:28:27",
+    "last_result": "Nobody is using this username or the username is unacceptable (caused by ResolveUsernameRequest)",
+    "fail_count": 42
+  },
+  {
+    "target": "freeguestposthere",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:28:38",
+    "last_result": "Sent: Post #5 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "IntenseAdsGroup",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:28:46",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "affiliate_marketing_hub",
+    "status": "Failed",
+    "last_posted": "2026-10-31 18:28:54",
+    "last_result": "Chat admin privileges are required to do that in the specified chat (for example, to send a message in a channel which is not yours), or invalid permissions used for the channel or group (caused by SendMessageRequest)",
+    "fail_count": 42
+  },
+  {
+    "target": "CryptoForexIndustry",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:29:04",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "waveescrow",
+    "status": "Restricted",
+    "last_posted": "2026-10-31 18:29:10",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 42
+  },
+  {
+    "target": "dark_side_affiliate_offers",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:29:23",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "affhub_collab",
+    "status": "Failed",
+    "last_posted": "2026-10-31 18:29:32",
+    "last_result": "No user has \"affhub_collab\" as username",
+    "fail_count": 42
+  },
+  {
+    "target": "blackads00",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:29:43",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "guestpostingsite",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:29:52",
+    "last_result": "Sent: Post #5 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "alvaroskingdom",
+    "status": "Failed",
+    "last_posted": "2026-10-31 18:29:59",
+    "last_result": "Nobody is using this username or the username is unacceptable (caused by ResolveUsernameRequest)",
+    "fail_count": 42
+  },
+  {
+    "target": "earninghub91club",
+    "status": "Restricted",
+    "last_posted": "2026-10-31 18:30:07",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 42
+  },
+  {
+    "target": "affmktcity",
+    "status": "Failed",
+    "last_posted": "2026-10-31 18:30:15",
+    "last_result": "No user has \"affmktcity\" as username",
+    "fail_count": 42
+  },
+  {
+    "target": "aff_sharks",
+    "status": "Failed",
+    "last_posted": "2026-10-31 18:30:24",
+    "last_result": "No user has \"aff_sharks\" as username",
+    "fail_count": 42
+  },
+  {
+    "target": "AffiliateMarketing_Cpa",
+    "status": "Failed",
+    "last_posted": "2026-10-31 18:30:29",
+    "last_result": "Nobody is using this username or the username is unacceptable (caused by ResolveUsernameRequest)",
+    "fail_count": 42
+  },
+  {
+    "target": "arbitrazhBHT",
+    "status": "Failed",
+    "last_posted": "2026-10-31 18:30:39",
+    "last_result": "RPCError 403: ALLOW_PAYMENT_REQUIRED_10 (caused by SendMessageRequest)",
+    "fail_count": 42
+  },
+  {
+    "target": "myadru",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:30:46",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "guestposting4u",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:30:55",
+    "last_result": "Sent: Post #5 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "forexcryotpsolutions",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:31:02",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "adsense_buy_and_sell",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:31:11",
+    "last_result": "Sent: Post #5 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "Cryptogroupps",
+    "status": "Restricted",
+    "last_posted": "2026-10-31 18:31:20",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 18
+  },
+  {
+    "target": "wiseaffiliate",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:31:31",
+    "last_result": "Sent: Post #5 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "CryptoForexJobs",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:31:41",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "Dabbaboxtradersinsite",
+    "status": "Restricted",
+    "last_posted": "2026-10-31 18:31:52",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 24
+  },
+  {
+    "target": "free_youtube_promotion_group",
+    "status": "Failed",
+    "last_posted": "2026-10-31 18:31:59",
+    "last_result": "Chat admin privileges are required to do that in the specified chat (for example, to send a message in a channel which is not yours), or invalid permissions used for the channel or group (caused by SendMessageRequest)",
+    "fail_count": 42
+  },
+  {
+    "target": "backlinks21",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:32:06",
+    "last_result": "Sent: Post #5 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "fbads_account_disabled",
+    "status": "Failed",
+    "last_posted": "2026-10-31 18:32:11",
+    "last_result": "Nobody is using this username or the username is unacceptable (caused by ResolveUsernameRequest)",
+    "fail_count": 42
+  },
+  {
+    "target": "seo_services",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:32:18",
+    "last_result": "Sent: Post #5 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "BlackHat FB Affiliate Club",
+    "status": "Failed",
+    "last_posted": "2026-10-31 18:32:25",
+    "last_result": "Cannot find any entity corresponding to \"@BlackHat FB Affiliate Club\"",
+    "fail_count": 42
+  },
+  {
+    "target": "traffichere",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:32:32",
+    "last_result": "Sent: Post #5 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "blogging_goal",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:32:42",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "CryptoFXConnect",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:32:53",
+    "last_result": "Sent: Post #5 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "googleadsenseload",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:33:01",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "AffiliaTerritory",
+    "status": "Restricted",
+    "last_posted": "2026-10-31 18:33:09",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 42
+  },
+  {
+    "target": "FXB2B",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:33:29",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "ExclusiveFXsecret",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:33:37",
+    "last_result": "Sent: Post #5 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "AerodynamicV1_Promotion",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:33:47",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "B2B_FX",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:33:57",
+    "last_result": "Sent: Post #5 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "youtubeadsenseresellbuy",
+    "status": "Failed",
+    "last_posted": "2026-10-31 18:34:06",
+    "last_result": "The chat is restricted and cannot be used in that request (caused by SendMessageRequest)",
+    "fail_count": 41
+  },
+  {
+    "target": "Affiliatewith",
+    "status": "Failed",
+    "last_posted": "2026-10-31 18:34:16",
+    "last_result": "Nobody is using this username or the username is unacceptable (caused by ResolveUsernameRequest)",
+    "fail_count": 41
+  },
+  {
+    "target": "thegodsforexcrypto",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:34:27",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "pirate_tutorials_officiall",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:34:37",
+    "last_result": "Sent: Post #5 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "cardingopkingdom",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:34:47",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "forexcrypto_leads_traffic",
+    "status": "Failed",
+    "last_posted": "2026-10-31 18:34:56",
+    "last_result": "No user has \"forexcrypto_leads_traffic\" as username",
+    "fail_count": 41
+  },
+  {
+    "target": "goBlackHat Market | Facebook",
+    "status": "Failed",
+    "last_posted": "2026-10-31 18:35:06",
+    "last_result": "Cannot find any entity corresponding to \"@goBlackHat Market | Facebook\"",
+    "fail_count": 41
+  },
+  {
+    "target": "💰Finance | Forex & Crypto Solu",
+    "status": "Failed",
+    "last_posted": "2026-10-31 18:35:14",
+    "last_result": "Cannot find any entity corresponding to \"@💰Finance | Forex & Crypto Solu\"",
+    "fail_count": 41
+  },
+  {
+    "target": "myadnote",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:35:24",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "trafficforyou",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:35:35",
+    "last_result": "Sent: Post #5 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "affiliatesmarketing",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:35:43",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "royalaffiliates",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:35:55",
+    "last_result": "Sent: Post #5 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "TheACDgroup",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:36:01",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "black_white_shop",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:36:08",
+    "last_result": "Sent: Post #5 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "FxCryptoTraffic",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:36:19",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "v_miami",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:36:28",
+    "last_result": "Sent: Post #5 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "adskiy_google",
+    "status": "Restricted",
+    "last_posted": "2026-10-31 18:36:36",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 31
+  },
+  {
+    "target": "affiliate_marketing_eng",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:36:48",
+    "last_result": "Sent: Post #5 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "rabota_kiev_vacancy",
+    "status": "Restricted",
+    "last_posted": "2026-10-31 18:36:57",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 31
+  },
+  {
+    "target": "myadlist",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:37:04",
+    "last_result": "Sent: Post #5 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "IsraelSmartBuy",
+    "status": "Restricted",
+    "last_posted": "2026-10-31 18:37:15",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 31
+  },
+  {
+    "target": "Tiger_Calling_Meman_Tiger",
+    "status": "Restricted",
+    "last_posted": "2026-10-31 18:37:20",
+    "last_result": "Write forbidden/restricted",
+    "fail_count": 31
+  },
+  {
+    "target": "paypercallaffiliates",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:37:27",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "telecallerjob7",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:37:34",
+    "last_result": "Sent: Post #5 (Campaign)",
+    "fail_count": 0
+  },
+  {
+    "target": "adsensebuyandsell38",
+    "status": "Success",
+    "last_posted": "2026-10-31 18:37:40",
+    "last_result": "Sent: Post #6 (Campaign)",
+    "fail_count": 0
+  }
+]
