@@ -60,6 +60,23 @@ def clean_phone_number(phone: str) -> str:
         cleaned = "+" + cleaned
     return cleaned
 
+def export_string_session_from_client(client: TelegramClient) -> Optional[str]:
+    """Safely exports the authenticated Telegram session as a portable string."""
+    try:
+        if not client or not client.session:
+            return None
+        if isinstance(client.session, StringSession):
+            return client.session.save()
+        str_sess = StringSession()
+        if hasattr(client.session, 'dc_id') and client.session.dc_id:
+            str_sess.set_dc(client.session.dc_id, client.session.server_address, client.session.port)
+        if hasattr(client.session, 'auth_key') and client.session.auth_key:
+            str_sess.auth_key = client.session.auth_key
+            return str_sess.save()
+        return None
+    except Exception:
+        return None
+
 async def get_client_for_account(acc: Dict[str, Any]) -> Optional[TelegramClient]:
     acc_id = acc.get("id")
     if not acc_id:
@@ -72,17 +89,44 @@ async def get_client_for_account(acc: Dict[str, Any]) -> Optional[TelegramClient
 
     session_name = acc.get("session_name") or f"{acc_id}"
     session_path = SESSIONS_DIR / session_name
+    session_file = session_path.with_suffix(".session")
+
+    # If SQLite session file does not exist, reconstruct it from string_session immediately
+    if (not session_file.exists() or session_file.stat().st_size == 0) and acc.get("string_session"):
+        try:
+            from app.cloud_vault import write_sqlite_session_from_string
+            write_sqlite_session_from_string(session_name, acc["string_session"])
+        except Exception:
+            pass
 
     try:
         client = TelegramClient(str(session_path), int(acc["api_id"]), str(acc["api_hash"]), **CLIENT_PARAMS)
         await client.connect()
         if not await client.is_user_authorized():
-            add_log("WARNING", f"Account {acc.get('phone')} session is not authorized.")
-            return None
+            # Try once more if string_session is present (e.g. stale or partial session file)
+            if acc.get("string_session"):
+                try:
+                    from app.cloud_vault import write_sqlite_session_from_string
+                    write_sqlite_session_from_string(session_name, acc["string_session"])
+                    await client.connect()
+                except Exception:
+                    pass
+
+            if not await client.is_user_authorized():
+                add_log("WARNING", f"Account {acc.get('phone')} session is not authorized.", user_id=acc.get("owner_user_id"))
+                return None
+
+        # Auto-extract and persist string_session if not already saved
+        if not acc.get("string_session"):
+            str_sess = export_string_session_from_client(client)
+            if str_sess:
+                acc["string_session"] = str_sess
+                upsert_account(acc, user_id=acc.get("owner_user_id"))
+
         _clients[acc_id] = client
         return client
     except Exception as e:
-        add_log("ERROR", f"Failed to initialize client for {acc.get('phone')}: {e}")
+        add_log("ERROR", f"Failed to initialize client for {acc.get('phone')}: {e}", user_id=acc.get("owner_user_id"))
         return None
 
 async def disconnect_all_clients():
@@ -300,6 +344,9 @@ async def submit_login_code(phone: str, code: str, password: Optional[str] = Non
         await perm_client.connect()
         _clients[acc_id] = perm_client
 
+        # Export string session for cloud persistence across restarts
+        str_sess = export_string_session_from_client(perm_client)
+
         account_info = {
             "id": acc_id,
             "user_id": tg_user_id,
@@ -311,6 +358,7 @@ async def submit_login_code(phone: str, code: str, password: Optional[str] = Non
             "api_id": pending["api_id"],
             "api_hash": pending["api_hash"],
             "session_name": final_session_name,
+            "string_session": str_sess,
             "is_premium": is_premium,
             "is_active": True,
             "status": "Ready",
@@ -411,6 +459,7 @@ async def login_with_string_session(api_id: int, api_hash: str, session_str: str
             "api_id": api_id,
             "api_hash": api_hash,
             "session_name": final_session_name,
+            "string_session": session_str,
             "is_premium": is_premium,
             "is_active": True,
             "status": "Ready",

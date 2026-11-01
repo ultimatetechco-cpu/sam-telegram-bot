@@ -100,10 +100,16 @@ def load_users() -> List[Dict[str, Any]]:
             pass
     return users
 
-def save_users(users: List[Dict[str, Any]]) -> None:
+def save_users(users: List[Dict[str, Any]], sync_vault: bool = True) -> None:
     ensure_directories()
     with open(USERS_FILE, "w", encoding="utf-8") as f:
         json.dump(users, f, indent=2, ensure_ascii=False)
+    if sync_vault:
+        try:
+            from app.cloud_vault import schedule_vault_push
+            schedule_vault_push()
+        except Exception:
+            pass
 
 def load_auth_sessions() -> Dict[str, Dict[str, Any]]:
     global ACTIVE_TOKENS
@@ -116,11 +122,17 @@ def load_auth_sessions() -> Dict[str, Dict[str, Any]]:
             pass
     return ACTIVE_TOKENS
 
-def save_auth_sessions() -> None:
+def save_auth_sessions(sync_vault: bool = True) -> None:
     ensure_directories()
     try:
         with open(SESSIONS_FILE, "w", encoding="utf-8") as f:
             json.dump(ACTIVE_TOKENS, f, indent=2, ensure_ascii=False)
+        if sync_vault:
+            try:
+                from app.cloud_vault import schedule_vault_push
+                schedule_vault_push()
+            except Exception:
+                pass
     except Exception:
         pass
 

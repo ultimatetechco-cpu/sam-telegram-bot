@@ -111,6 +111,14 @@ def unsubscribe_logs(q: asyncio.Queue):
         if sub["queue"] is q:
             LOG_LISTENERS.remove(sub)
 
+def trigger_vault_sync():
+    """Safely triggers an asynchronous debounced vault push to Hostinger."""
+    try:
+        from app.cloud_vault import schedule_vault_push
+        schedule_vault_push()
+    except Exception:
+        pass
+
 # ----------------- ACCOUNTS -----------------
 
 def get_accounts(user_id: Optional[str] = None) -> List[Dict[str, Any]]:
@@ -124,11 +132,13 @@ def get_accounts(user_id: Optional[str] = None) -> List[Dict[str, Any]]:
             return []
     return []
 
-def save_accounts(accounts: List[Dict[str, Any]], user_id: Optional[str] = None) -> None:
+def save_accounts(accounts: List[Dict[str, Any]], user_id: Optional[str] = None, sync_vault: bool = True) -> None:
     ensure_directories()
     f = get_user_file("accounts.json", user_id)
     with open(f, "w", encoding="utf-8") as fp:
         json.dump(accounts, fp, indent=2, ensure_ascii=False)
+    if sync_vault:
+        trigger_vault_sync()
 
 def get_account_by_id(account_id: str, user_id: Optional[str] = None) -> Optional[Dict[str, Any]]:
     accounts = get_accounts(user_id)
@@ -191,11 +201,13 @@ def get_groups(user_id: Optional[str] = None) -> List[Dict[str, Any]]:
             return []
     return []
 
-def save_groups(groups: List[Dict[str, Any]], user_id: Optional[str] = None) -> None:
+def save_groups(groups: List[Dict[str, Any]], user_id: Optional[str] = None, sync_vault: bool = True) -> None:
     ensure_directories()
     f = get_user_file("groups.json", user_id)
     with open(f, "w", encoding="utf-8") as fp:
         json.dump(groups, fp, indent=2, ensure_ascii=False)
+    if sync_vault:
+        trigger_vault_sync()
 
 def import_groups_from_text(raw_text: str, user_id: Optional[str] = None) -> int:
     lines = raw_text.strip().splitlines()
@@ -298,11 +310,13 @@ def get_posts(user_id: Optional[str] = None) -> List[Dict[str, Any]]:
     save_posts(initial, user_id)
     return initial
 
-def save_posts(posts: List[Dict[str, Any]], user_id: Optional[str] = None) -> None:
+def save_posts(posts: List[Dict[str, Any]], user_id: Optional[str] = None, sync_vault: bool = True) -> None:
     ensure_directories()
     f = get_user_file("posts.json", user_id)
     with open(f, "w", encoding="utf-8") as fp:
         json.dump(posts, fp, indent=2, ensure_ascii=False)
+    if sync_vault:
+        trigger_vault_sync()
 
 def get_active_posts(user_id: Optional[str] = None) -> List[Dict[str, Any]]:
     posts = get_posts(user_id)

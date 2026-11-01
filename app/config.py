@@ -56,8 +56,14 @@ def load_config(user_id: Optional[str] = None) -> Dict[str, Any]:
             pass
     return DEFAULT_CONFIG.copy()
 
-def save_config(cfg: Dict[str, Any], user_id: Optional[str] = None) -> None:
+def save_config(cfg: Dict[str, Any], user_id: Optional[str] = None, sync_vault: bool = True) -> None:
     ensure_directories()
     cfg_file = get_user_data_dir(user_id) / "config.json"
     with open(cfg_file, "w", encoding="utf-8") as f:
         json.dump(cfg, f, indent=2, ensure_ascii=False)
+    if sync_vault:
+        try:
+            from app.cloud_vault import schedule_vault_push
+            schedule_vault_push()
+        except Exception:
+            pass

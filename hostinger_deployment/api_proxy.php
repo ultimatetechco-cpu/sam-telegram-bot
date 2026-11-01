@@ -106,6 +106,89 @@ if (isset($_GET['action']) && $_GET['action'] === 'status') {
     exit;
 }
 
+// Persistent Cloud State Vault Actions (Guarantees zero account logout & persistence across Render restarts)
+if (isset($_GET['action']) && $_GET['action'] === 'vault_push') {
+    header("Content-Type: application/json");
+    header("Access-Control-Allow-Origin: *");
+    header("Access-Control-Allow-Headers: Authorization, Content-Type, Accept, X-Vault-Secret");
+
+    $allHeaders = function_exists('getallheaders') ? getallheaders() : [];
+    $secret = $_SERVER['HTTP_X_VAULT_SECRET'] 
+        ?? $allHeaders['X-Vault-Secret'] 
+        ?? $allHeaders['x-vault-secret'] 
+        ?? $_POST['secret'] 
+        ?? $_GET['secret'] 
+        ?? '';
+    $EXPECTED_SECRET = "sam_telegram_autopost_live_sync_2026_x99";
+
+    if ($secret !== $EXPECTED_SECRET) {
+        http_response_code(403);
+        echo json_encode(["status" => "error", "message" => "Unauthorized vault push request"]);
+        exit;
+    }
+
+    $rawInput = file_get_contents('php://input');
+    if (empty($rawInput)) {
+        http_response_code(400);
+        echo json_encode(["status" => "error", "message" => "Empty vault payload"]);
+        exit;
+    }
+
+    $vaultDir = __DIR__ . '/storage_vault';
+    if (!is_dir($vaultDir)) {
+        @mkdir($vaultDir, 0755, true);
+        @file_put_contents($vaultDir . '/.htaccess', "Deny from all\n");
+    }
+
+    $saved = @file_put_contents($vaultDir . '/vault_state.json', $rawInput);
+    if ($saved !== false) {
+        echo json_encode([
+            "status" => "success",
+            "message" => "Vault state successfully persisted to Hostinger",
+            "bytes" => $saved,
+            "timestamp" => date('Y-m-d H:i:s T')
+        ]);
+    } else {
+        http_response_code(500);
+        echo json_encode(["status" => "error", "message" => "Failed to write vault_state.json on Hostinger"]);
+    }
+    exit;
+}
+
+if (isset($_GET['action']) && $_GET['action'] === 'vault_pull') {
+    header("Content-Type: application/json");
+    header("Access-Control-Allow-Origin: *");
+    header("Access-Control-Allow-Headers: Authorization, Content-Type, Accept, X-Vault-Secret");
+
+    $allHeaders = function_exists('getallheaders') ? getallheaders() : [];
+    $secret = $_SERVER['HTTP_X_VAULT_SECRET'] 
+        ?? $allHeaders['X-Vault-Secret'] 
+        ?? $allHeaders['x-vault-secret'] 
+        ?? $_GET['secret'] 
+        ?? '';
+    $EXPECTED_SECRET = "sam_telegram_autopost_live_sync_2026_x99";
+
+    if ($secret !== $EXPECTED_SECRET) {
+        http_response_code(403);
+        echo json_encode(["status" => "error", "message" => "Unauthorized vault pull request"]);
+        exit;
+    }
+
+    $vaultFile = __DIR__ . '/storage_vault/vault_state.json';
+    if (!file_exists($vaultFile)) {
+        echo json_encode(["status" => "empty", "message" => "No vault state exists yet", "vault" => null]);
+        exit;
+    }
+
+    $content = @file_get_contents($vaultFile);
+    if ($content) {
+        echo $content;
+    } else {
+        echo json_encode(["status" => "empty", "message" => "Vault file empty", "vault" => null]);
+    }
+    exit;
+}
+
 // Direct Hostinger Mail Gateway action
 if (isset($_GET['action']) && $_GET['action'] === 'send_mail') {
     header("Content-Type: application/json");

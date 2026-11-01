@@ -100,10 +100,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Startup event to ensure auth database is initialized
+# Startup event to ensure auth database is initialized and Cloud Vault sync is active
 @app.on_event("startup")
 async def startup_event():
     init_auth()
+    try:
+        from app.cloud_vault import start_cloud_vault_service
+        asyncio.create_task(start_cloud_vault_service())
+    except Exception as e:
+        print(f"Failed to start Cloud Vault service: {e}")
 
 # Ensure media directory exists
 MEDIA_DIR.mkdir(parents=True, exist_ok=True)
