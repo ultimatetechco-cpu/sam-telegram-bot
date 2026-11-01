@@ -824,15 +824,44 @@ function updatePreview() {
   const mediaStatus = document.getElementById('media-status-text');
   const btnRemove = document.getElementById('btn-remove-media');
 
-  if (currentPost && currentPost.has_media && currentPost.media_path) {
+  if (currentPost && currentPost.has_media && (currentPost.media_path || currentPost.media_filename || currentPost.media_url)) {
     mediaContainer.classList.remove('hidden');
-    const filename = currentPost.media_name || currentPost.media_path.split('\\').pop().split('/').pop();
-    const mediaPrefix = window.API_BASE_URL ? window.API_BASE_URL.replace(/\/api\/?$/, '') : (getApiEndpoint('/api').replace(/\/api\/?$/, ''));
-    mediaImg.src = `${mediaPrefix}/media/${filename}`;
-    mediaStatus.textContent = `Attached: ${filename}`;
+
+    // Extract disk filename (prioritizing media_filename, then base of media_path)
+    let diskFile = '';
+    if (currentPost.media_filename) {
+      diskFile = currentPost.media_filename;
+    } else if (currentPost.media_path) {
+      diskFile = currentPost.media_path.split('\\').pop().split('/').pop();
+    }
+
+    const mediaPrefix = window.API_BASE_URL 
+      ? window.API_BASE_URL.replace(/\/api\/?$/, '') 
+      : (getApiEndpoint('/api').replace(/\/api\/?$/, ''));
+
+    let imgSrc = '';
+    if (currentPost.media_url) {
+      imgSrc = currentPost.media_url.startsWith('http')
+        ? currentPost.media_url
+        : `${mediaPrefix}${currentPost.media_url.startsWith('/') ? '' : '/'}${currentPost.media_url}`;
+    } else if (diskFile) {
+      imgSrc = `${mediaPrefix}/media/${diskFile}`;
+    }
+
+    mediaImg.src = imgSrc;
+    mediaImg.onerror = function() {
+      // Fallback: try proxying via /api/media/ if /media/ is not directly reachable
+      if (diskFile && !this.src.includes('/api/media/')) {
+        this.src = `${mediaPrefix}/api/media/${diskFile}`;
+      }
+    };
+
+    const displayName = currentPost.media_name || diskFile || 'Media attachment';
+    mediaStatus.textContent = `Attached: ${displayName}`;
     btnRemove.classList.remove('hidden');
   } else {
     mediaContainer.classList.add('hidden');
+    mediaImg.src = '';
     mediaStatus.textContent = 'No media attached';
     btnRemove.classList.add('hidden');
   }
@@ -926,38 +955,78 @@ async function fetchPostFromTelegram() {
 
 async function uploadMediaFile(input) {
   if (!input.files || !input.files[0] || !currentPost) return;
+  const file = input.files[0];
   const formData = new FormData();
-  formData.append('file', input.files[0]);
+  formData.append('file', file);
+
+  const statusText = document.getElementById('media-status-text');
+  if (statusText) {
+    statusText.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-blue-400"></i> Uploading media...';
+  }
 
   try {
-    const res = await fetch(`/api/posts/${currentPost.id}/upload_media`, {
+    const uploadUrl = getApiEndpoint(`/api/posts/${currentPost.id}/upload_media`);
+    const token = localStorage.getItem('auth_token');
+    const headers = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const res = await window.fetch(uploadUrl, {
       method: 'POST',
+      headers: headers,
       body: formData
     });
+
     const data = await res.json();
-    if (data.status === 'success') {
+    if (res.ok && data.status === 'success') {
       currentPost = data.post;
+      const idx = allPosts.findIndex(p => p.id === currentPost.id);
+      if (idx !== -1) allPosts[idx] = currentPost;
       await loadPosts();
       updatePreview();
       showToast('Media uploaded and attached to this post!', 'success');
+    } else {
+      showToast(data.detail || data.message || 'Failed to upload media', 'error');
+      updatePreview();
     }
   } catch (e) {
-    showToast('Failed to upload media', 'error');
+    console.error('Upload media error:', e);
+    showToast('Failed to upload media. Please check server connection.', 'error');
+    updatePreview();
+  } finally {
+    input.value = '';
   }
 }
 
 async function removeMedia() {
   if (!currentPost) return;
   try {
-    const res = await fetch(`/api/posts/${currentPost.id}/media`, { method: 'DELETE' });
+    const removeUrl = getApiEndpoint(`/api/posts/${currentPost.id}/media`);
+    const token = localStorage.getItem('auth_token');
+    const headers = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const res = await window.fetch(removeUrl, {
+      method: 'DELETE',
+      headers: headers
+    });
+
     const data = await res.json();
-    if (data.status === 'success') {
+    if (res.ok && data.status === 'success') {
       currentPost = data.post;
+      const idx = allPosts.findIndex(p => p.id === currentPost.id);
+      if (idx !== -1) allPosts[idx] = currentPost;
       await loadPosts();
       updatePreview();
       showToast('Media attachment removed', 'info');
+    } else {
+      showToast(data.detail || data.message || 'Failed to remove media', 'error');
     }
   } catch (e) {
+    console.error('Remove media error:', e);
     showToast('Failed to remove media', 'error');
   }
 }

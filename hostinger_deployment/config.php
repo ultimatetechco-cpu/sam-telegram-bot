@@ -1,9 +1,9 @@
 <?php
 // ========================================================
 // Telegram AutoPost Pro - Hostinger Configuration
-// Auto-synced: 2026-10-31
+// 24/7 Cloud Backend (Render.com)
 // ========================================================
 
-// Active Python backend URL.
+// Active 24/7 Cloud Backend URL.
 // Make sure there is NO trailing slash.
-$BACKEND_URL = "https://dodge-giant-artwork-trainers.trycloudflare.com";
+$BACKEND_URL = "https://sam-telegram-bot-hgm1.onrender.com";

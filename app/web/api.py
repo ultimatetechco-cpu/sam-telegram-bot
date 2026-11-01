@@ -1,12 +1,15 @@
 import asyncio
 import json
 import os
+import re
 import shutil
+import time
+import mimetypes
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request, Depends, Header, Cookie, Response
-from fastapi.responses import HTMLResponse, StreamingResponse, JSONResponse
+from fastapi.responses import HTMLResponse, StreamingResponse, JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -31,6 +34,7 @@ from app.storage import (
     delete_post,
     toggle_post_active,
     get_active_posts,
+    resolve_post_media_path,
     get_logs,
     subscribe_logs,
     unsubscribe_logs,
@@ -101,14 +105,28 @@ app.add_middleware(
 async def startup_event():
     init_auth()
 
+# Ensure media directory exists
+MEDIA_DIR.mkdir(parents=True, exist_ok=True)
+
 # Mount static files
 STATIC_DIR = BASE_DIR / "app" / "web" / "static"
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
-# Mount media directory for post previews
-if MEDIA_DIR.exists():
-    app.mount("/media", StaticFiles(directory=str(MEDIA_DIR)), name="media")
+# Explicit media serving routes with MIME detection and caching
+@app.get("/media/{filename:path}")
+@app.get("/api/media/{filename:path}")
+async def serve_media_file(filename: str):
+    clean_name = os.path.basename(filename.replace("\\", "/"))
+    file_path = MEDIA_DIR / clean_name
+    if not file_path.exists() or not file_path.is_file():
+        raise HTTPException(status_code=404, detail="Media file not found")
+    mime_type, _ = mimetypes.guess_type(str(file_path))
+    return FileResponse(
+        file_path,
+        media_type=mime_type or "application/octet-stream",
+        headers={"Cache-Control": "public, max-age=86400"}
+    )
 
 # ----------------- AUTH DEPENDENCIES -----------------
 
@@ -803,6 +821,8 @@ class PostUpsertBody(BaseModel):
     title: Optional[str] = None
     html_content: str
     media_path: Optional[str] = None
+    media_filename: Optional[str] = None
+    media_url: Optional[str] = None
     media_name: Optional[str] = None
     has_media: bool = False
     is_active: bool = True
@@ -842,14 +862,24 @@ async def api_upload_post_media(post_id: str, file: UploadFile = File(...), curr
     post = get_post_by_id(post_id, user_id=uid)
     if not post:
         post = {"id": post_id, "title": f"Post {post_id}", "html_content": ""}
-    filename = f"post_{uid}_{post_id}_{int(asyncio.get_event_loop().time())}_{file.filename}"
-    file_path = MEDIA_DIR / filename
+
+    # Sanitize upload filename
+    orig_name = os.path.basename(file.filename or "media.jpg").replace(" ", "_")
+    clean_name = re.sub(r'[^a-zA-Z0-9_\.-]', '', orig_name) or "media.jpg"
+
+    MEDIA_DIR.mkdir(parents=True, exist_ok=True)
+    disk_filename = f"post_{uid}_{post_id}_{int(time.time())}_{clean_name}"
+    file_path = MEDIA_DIR / disk_filename
+
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
     post["media_path"] = str(file_path)
+    post["media_filename"] = disk_filename
+    post["media_url"] = f"/media/{disk_filename}"
     post["media_name"] = file.filename
     post["has_media"] = True
+
     saved = upsert_post(post, user_id=uid)
     add_log("INFO", f"Attached media '{file.filename}' to {post.get('title')}.", user_id=uid)
     return {"status": "success", "post": saved}
@@ -860,9 +890,20 @@ async def api_remove_post_media(post_id: str, current_user: Dict[str, Any] = Dep
     post = get_post_by_id(post_id, user_id=uid)
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
+
+    try:
+        resolved = resolve_post_media_path(post)
+        if resolved and os.path.isfile(resolved):
+            os.remove(resolved)
+    except Exception:
+        pass
+
     post["media_path"] = None
+    post["media_filename"] = None
+    post["media_url"] = None
     post["media_name"] = None
     post["has_media"] = False
+
     saved = upsert_post(post, user_id=uid)
     add_log("INFO", f"Removed media from {post.get('title')}.", user_id=uid)
     return {"status": "success", "post": saved}

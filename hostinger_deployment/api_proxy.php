@@ -8,13 +8,17 @@
 error_reporting(0);
 @ini_set('display_errors', '0');
 
-// Load backend target URL from config.php
-$backend_url = "https://kate-tramadol-postal-supporting.trycloudflare.com";
+// Load backend target URL directly (bypassing OPcache)
+$backend_url = "https://sam-telegram-bot-hgm1.onrender.com";
 $config_file = __DIR__ . '/config.php';
 if (file_exists($config_file)) {
-    include $config_file;
-    if (isset($BACKEND_URL) && !empty($BACKEND_URL)) {
-        $backend_url = $BACKEND_URL;
+    $rawCfg = @file_get_contents($config_file);
+    if ($rawCfg && preg_match('/\$BACKEND_URL\s*=\s*[\'"]([^\'"]+)[\'"]/', $rawCfg, $m)) {
+        $backend_url = $m[1];
+    } elseif (include $config_file) {
+        if (isset($BACKEND_URL) && !empty($BACKEND_URL)) {
+            $backend_url = $BACKEND_URL;
+        }
     }
 }
 $backend_url = rtrim($backend_url, '/');
@@ -71,6 +75,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'sync_backend') {
                      "\$BACKEND_URL = " . var_export($newUrl, true) . ";\n";
 
     $writeSuccess = @file_put_contents(__DIR__ . '/config.php', $configContent);
+    if (function_exists('opcache_invalidate')) {
+        @opcache_invalidate(__DIR__ . '/config.php', true);
+    }
     if ($writeSuccess !== false) {
         echo json_encode([
             "status" => "success",
@@ -184,7 +191,8 @@ $headersToSend = [];
 if (!empty($authHeader)) {
     $headersToSend[] = 'Authorization: ' . $authHeader;
 }
-if (!empty($_SERVER['CONTENT_TYPE'])) {
+// Do NOT forward Content-Type if uploading files; cURL must auto-generate its own multipart boundary
+if (!empty($_SERVER['CONTENT_TYPE']) && empty($_FILES)) {
     $headersToSend[] = 'Content-Type: ' . $_SERVER['CONTENT_TYPE'];
 }
 $headersToSend[] = 'Accept: application/json, text/plain, */*';
@@ -192,26 +200,29 @@ $headersToSend[] = 'Accept: application/json, text/plain, */*';
 // Initialize cURL session
 $ch = curl_init($targetUrl);
 $method = $_SERVER['REQUEST_METHOD'];
-curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
 
 // Handle file uploads (multipart/form-data) or JSON bodies
 if (!empty($_FILES)) {
+    curl_setopt($ch, CURLOPT_POST, true);
     $postData = $_POST;
     foreach ($_FILES as $fileKey => $fileInfo) {
         if (is_uploaded_file($fileInfo['tmp_name'])) {
             $postData[$fileKey] = new CURLFile(
                 $fileInfo['tmp_name'],
-                $fileInfo['type'],
+                $fileInfo['type'] ?: 'application/octet-stream',
                 $fileInfo['name']
             );
         }
     }
     curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
 } elseif (in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'])) {
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
     $body = file_get_contents('php://input');
     if (!empty($body)) {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
     }
+} else {
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
 }
 
 curl_setopt($ch, CURLOPT_HTTPHEADER, $headersToSend);

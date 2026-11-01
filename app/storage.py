@@ -366,6 +366,48 @@ def increment_post_usage(post_id: str, user_id: Optional[str] = None):
             break
     save_posts(posts, user_id)
 
+def resolve_post_media_path(post: Optional[Dict[str, Any]]) -> Optional[str]:
+    """
+    Cross-platform resolver for post media attachments.
+    Resolves absolute path, relative path, or filename inside MEDIA_DIR.
+    Handles cross-OS migrations (Windows <-> Linux container on Render).
+    """
+    if not post or not post.get("has_media"):
+        return None
+
+    candidates = []
+
+    # 1. Direct media_path if provided
+    raw_path = post.get("media_path")
+    if raw_path:
+        candidates.append(str(raw_path))
+        base_name = os.path.basename(str(raw_path).replace("\\", "/"))
+        candidates.append(str(MEDIA_DIR / base_name))
+
+    # 2. media_filename if provided
+    media_fn = post.get("media_filename")
+    if media_fn:
+        clean_fn = os.path.basename(str(media_fn).replace("\\", "/"))
+        candidates.append(str(MEDIA_DIR / clean_fn))
+
+    # 3. media_url if provided (e.g. /media/post_123.jpg)
+    media_url = post.get("media_url")
+    if media_url and isinstance(media_url, str):
+        url_fn = os.path.basename(media_url.replace("\\", "/"))
+        candidates.append(str(MEDIA_DIR / url_fn))
+
+    # 4. Fallback to media_name if present
+    media_nm = post.get("media_name")
+    if media_nm:
+        clean_nm = os.path.basename(str(media_nm).replace("\\", "/"))
+        candidates.append(str(MEDIA_DIR / clean_nm))
+
+    for p in candidates:
+        if p and os.path.isfile(p):
+            return os.path.abspath(p)
+
+    return None
+
 # Draft helper
 DEFAULT_DRAFT = DEFAULT_POSTS[0]
 

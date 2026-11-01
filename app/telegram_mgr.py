@@ -483,6 +483,8 @@ async def fetch_telegram_post(chat_input: str, message_id: Optional[int] = None,
 
         media_path = None
         media_name = None
+        media_filename = None
+        media_url = None
         has_media = bool(msg.media)
 
         if has_media:
@@ -491,11 +493,15 @@ async def fetch_telegram_post(chat_input: str, message_id: Optional[int] = None,
             if downloaded:
                 media_path = downloaded
                 media_name = os.path.basename(downloaded)
+                media_filename = media_name
+                media_url = f"/media/{media_name}"
 
         post_data = {
             "html_content": html_content,
             "media_path": media_path,
             "media_name": media_name,
+            "media_filename": media_filename,
+            "media_url": media_url,
             "has_media": has_media,
             "source_chat": chat_input,
             "source_msg_id": msg.id,

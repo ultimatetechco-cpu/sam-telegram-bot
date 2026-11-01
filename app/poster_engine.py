@@ -26,6 +26,7 @@ from app.storage import (
     get_draft,
     get_active_posts,
     increment_post_usage,
+    resolve_post_media_path,
     add_log
 )
 from app.auth_mgr import get_user_by_id
@@ -257,8 +258,11 @@ async def run_single_broadcast(user_id: Optional[str] = None, is_manual: bool = 
 
             html_content = post_to_send.get("html_content", "").strip()
             text, entities = parse_html_to_message_and_entities(html_content)
-            media_path = post_to_send.get("media_path") if (post_to_send.get("has_media") and post_to_send.get("media_path") and os.path.exists(post_to_send.get("media_path"))) else None
+            media_path = resolve_post_media_path(post_to_send)
             post_title = post_to_send.get("title", post_to_send.get("id"))
+
+            if post_to_send.get("has_media") and not media_path:
+                add_log("WARNING", f"Media attachment for '{post_title}' was not found on disk; sending caption text only.", user_id=user_id)
 
             acc_label = f"{account.get('first_name', '')} (@{account.get('username') or account.get('phone')})"
             add_log("INFO", f"[{i+1}/{len(groups)}] Sending '{post_title}' to '{target}' via {acc_label}...", user_id=user_id)
@@ -269,9 +273,18 @@ async def run_single_broadcast(user_id: Optional[str] = None, is_manual: bool = 
 
                 # Dispatch message with full entities (preserving 3D custom emojis) & media
                 if media_path:
-                    await client.send_message(target_entity, text, formatting_entities=entities, file=media_path)
+                    await client.send_file(
+                        target_entity,
+                        file=media_path,
+                        caption=text,
+                        formatting_entities=entities
+                    )
                 else:
-                    await client.send_message(target_entity, text, formatting_entities=entities)
+                    await client.send_message(
+                        target_entity,
+                        text,
+                        formatting_entities=entities
+                    )
 
                 increment_post_usage(post_to_send.get("id", "post_1"), user_id=user_id)
                 update_group_status(target, "Success", result=f"Sent: {post_title}", success=True, user_id=user_id)
