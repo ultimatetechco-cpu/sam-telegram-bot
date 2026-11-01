@@ -596,31 +596,45 @@ async function loadPosts() {
     const container = document.getElementById('post-pills-container');
     if (!container) return;
 
+    // Update posts count badge
+    const badgeEl = document.getElementById('posts-count-badge');
+    if (badgeEl) {
+      const activeCount = posts.filter(x => x.is_active !== false).length;
+      badgeEl.textContent = `${posts.length} Posts (${activeCount} Active)`;
+    }
+
     if (!posts.length) {
-      container.innerHTML = '<span class="text-xs text-slate-500">No posts. Click Add New Post.</span>';
+      container.innerHTML = '<span class="text-xs text-slate-500 py-2">No posts. Click "+ Add New Post" above to create one.</span>';
       return;
     }
 
     container.innerHTML = posts.map(p => {
       const isSel = currentPost && currentPost.id === p.id;
       const activeDot = p.is_active !== false 
-        ? '<span class="w-2 h-2 rounded-full bg-emerald-400" title="Active in rotation"></span>'
-        : '<span class="w-2 h-2 rounded-full bg-slate-500" title="Paused"></span>';
+        ? '<span class="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" title="Active in rotation"></span>'
+        : '<span class="w-2 h-2 rounded-full bg-slate-500 flex-shrink-0" title="Paused"></span>';
       
-      const badge = p.times_posted ? `<span class="text-[10px] text-slate-500 font-mono">(${p.times_posted})</span>` : '';
-      const customEmojiTag = p.custom_emojis_count ? `<span class="text-[9px] px-1 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-mono">${p.custom_emojis_count} 3D</span>` : '';
+      const badge = p.times_posted ? `<span class="text-[10px] text-slate-400 font-mono flex-shrink-0">(${p.times_posted})</span>` : '';
+      const customEmojiTag = p.custom_emojis_count ? `<span class="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono flex-shrink-0">${p.custom_emojis_count} 3D</span>` : '';
 
       let accTag = '';
       if (p.assigned_account && p.assigned_account !== 'all') {
         const m = allAccounts.find(a => (a.id === p.assigned_account || String(a.user_id) === String(p.assigned_account) || a.phone === p.assigned_account));
         const shortName = m ? (m.first_name ? m.first_name.split(' ')[0] : 'Account') : 'Account';
-        accTag = `<span class="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 font-medium" title="Assigned exclusively to ${m ? m.first_name : ''}">👤 ${shortName}</span>`;
+        accTag = `<span class="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 font-medium flex-shrink-0" title="Assigned exclusively to ${m ? m.first_name : ''}">👤 ${shortName}</span>`;
       }
 
+      const mediaIndicator = p.has_media ? '<span class="text-amber-400 text-[10px] flex-shrink-0" title="Has attached media"><i class="fa-regular fa-image"></i></span>' : '';
+
+      const btnClasses = isSel 
+        ? 'px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer max-w-full border-blue-500 bg-blue-600/20 text-blue-300 shadow-sm shadow-blue-500/20 ring-1 ring-blue-500/40' 
+        : 'px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer max-w-full border-slate-800 bg-slate-800/60 text-slate-400 hover:text-white hover:border-slate-700 hover:bg-slate-800';
+
       return `
-        <button type="button" onclick="selectPost('${p.id}')" class="px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition whitespace-nowrap ${isSel ? 'border-blue-500 bg-blue-600/20 text-blue-300 shadow-sm shadow-blue-500/20' : 'border-slate-800 bg-slate-800/60 text-slate-400 hover:text-white hover:border-slate-700'}">
+        <button type="button" onclick="selectPost('${p.id}')" class="${btnClasses}" title="${p.title || p.id}">
           ${activeDot}
-          <span>${p.title || p.id}</span>
+          <span class="truncate max-w-[130px] sm:max-w-[200px] text-left">${p.title || p.id}</span>
+          ${mediaIndicator}
           ${accTag}
           ${customEmojiTag}
           ${badge}
@@ -695,6 +709,14 @@ function selectPost(postId) {
   }
 
   updatePreview();
+
+  const container = document.getElementById('post-pills-container');
+  if (container) {
+    const activeBtn = container.querySelector(`button[onclick*="${postId}"]`);
+    if (activeBtn && activeBtn.scrollIntoView) {
+      activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+    }
+  }
 }
 
 function loadPostsPillStyles() {
@@ -705,9 +727,9 @@ function loadPostsPillStyles() {
     if (buttons[idx]) {
       const isSel = currentPost && currentPost.id === p.id;
       if (isSel) {
-        buttons[idx].className = 'px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition whitespace-nowrap border-blue-500 bg-blue-600/20 text-blue-300 shadow-sm shadow-blue-500/20';
+        buttons[idx].className = 'group px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer max-w-full border-blue-500 bg-blue-600/20 text-blue-300 shadow-sm shadow-blue-500/20 ring-1 ring-blue-500/40';
       } else {
-        buttons[idx].className = 'px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition whitespace-nowrap border-slate-800 bg-slate-800/60 text-slate-400 hover:text-white hover:border-slate-700';
+        buttons[idx].className = 'group px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer max-w-full border-slate-800 bg-slate-800/60 text-slate-400 hover:text-white hover:border-slate-700 hover:bg-slate-800';
       }
     }
   });

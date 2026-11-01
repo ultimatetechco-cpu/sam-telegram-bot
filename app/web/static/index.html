@@ -193,23 +193,23 @@
     </div>
 
     <!-- Navigation Tabs -->
-    <div class="border-b border-slate-800 flex items-center gap-2 overflow-x-auto">
-      <button onclick="switchTab('schedule')" id="tab-btn-schedule" class="tab-btn flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 border-blue-500 text-blue-400 transition">
+    <div class="border-b border-slate-800 flex items-center gap-2 overflow-x-auto pb-px">
+      <button onclick="switchTab('schedule')" id="tab-btn-schedule" class="tab-btn flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 border-blue-500 text-blue-400 transition whitespace-nowrap flex-shrink-0">
         <i class="fa-solid fa-stopwatch"></i> 1. Schedule & Intervals
       </button>
-      <button onclick="switchTab('post')" id="tab-btn-post" class="tab-btn flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">
+      <button onclick="switchTab('post')" id="tab-btn-post" class="tab-btn flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition whitespace-nowrap flex-shrink-0">
         <i class="fa-solid fa-pen-nib"></i> 2. Post Studio & 3D Emojis
       </button>
-      <button onclick="switchTab('accounts')" id="tab-btn-accounts" class="tab-btn flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">
+      <button onclick="switchTab('accounts')" id="tab-btn-accounts" class="tab-btn flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition whitespace-nowrap flex-shrink-0">
         <i class="fa-solid fa-user-shield"></i> 3. Telegram Accounts (<span id="tab-acc-count">0</span>)
       </button>
-      <button onclick="switchTab('groups')" id="tab-btn-groups" class="tab-btn flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">
+      <button onclick="switchTab('groups')" id="tab-btn-groups" class="tab-btn flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition whitespace-nowrap flex-shrink-0">
         <i class="fa-solid fa-people-group"></i> 4. Target Groups (<span id="tab-grp-count">0</span>)
       </button>
-      <button onclick="switchTab('logs')" id="tab-btn-logs" class="tab-btn flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">
+      <button onclick="switchTab('logs')" id="tab-btn-logs" class="tab-btn flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition whitespace-nowrap flex-shrink-0">
         <i class="fa-solid fa-terminal"></i> 5. Live Activity Logs
       </button>
-      <button onclick="switchTab('admin')" id="tab-btn-admin" class="tab-btn hidden flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 border-transparent text-amber-400 hover:text-amber-300 transition">
+      <button onclick="switchTab('admin')" id="tab-btn-admin" class="tab-btn hidden flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 border-transparent text-amber-400 hover:text-amber-300 transition whitespace-nowrap flex-shrink-0">
         <i class="fa-solid fa-crown text-amber-400"></i> 👑 6. Admin Portal
       </button>
     </div>
@@ -392,20 +392,34 @@
     <div id="tab-content-post" class="tab-pane hidden space-y-6">
       
       <!-- Multi-Post Campaign Selector Bar -->
-      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p class="text-xs font-semibold text-slate-300 mb-2 flex items-center gap-2">
-            <i class="fa-solid fa-layer-group text-blue-400"></i> Active Campaign Posts Pool:
-            <span class="text-[10px] text-slate-500">(Bot automatically picks random posts from this pool)</span>
-          </p>
-          <div class="flex items-center gap-2 overflow-x-auto py-1" id="post-pills-container">
-            <!-- Populated dynamically -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-5 flex flex-col gap-3.5 w-full">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-800/80">
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 text-sm flex-shrink-0">
+              <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="text-xs font-bold text-white tracking-wide">Active Campaign Posts Pool</h3>
+                <span id="posts-count-badge" class="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/20 text-[10px] font-semibold">
+                  0 Posts
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-400">Bot automatically rotates or selects random posts from this pool during broadcasts.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <button type="button" onclick="createNewPost()" class="px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 transition shadow-md shadow-emerald-600/20 hover:scale-[1.02] active:scale-[0.98]">
+              <i class="fa-solid fa-plus"></i> Add New Post
+            </button>
           </div>
         </div>
-        <div class="flex items-center gap-2">
-          <button type="button" onclick="createNewPost()" class="px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 transition shadow-md shadow-emerald-600/20">
-            <i class="fa-solid fa-plus"></i> Add New Post (Post 2, 3...)
-          </button>
+
+        <!-- Fully Responsive Wrapping Post Pills -->
+        <div class="w-full min-w-0">
+          <div class="flex flex-wrap items-center gap-2 max-w-full" id="post-pills-container">
+            <!-- Populated dynamically with responsive pills -->
+          </div>
         </div>
       </div>
 
@@ -465,7 +479,7 @@
                 <!-- Dynamically populated with accounts -->
               </select>
             </div>
-            <div class="sm:col-span-3 flex items-center justify-end gap-3 pb-1">
+            <div class="sm:col-span-3 flex items-center justify-between sm:justify-end gap-3 pb-1 pt-1 sm:pt-0">
               <label class="flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer">
                 <input type="checkbox" id="post-active-toggle" checked onchange="toggleCurrentPostActive()" class="w-3.5 h-3.5 rounded text-blue-600 bg-slate-800 border-slate-700">
                 <span class="text-xs">Active</span>
@@ -508,18 +522,18 @@
           <textarea id="post-html" rows="9" oninput="updatePreview()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs text-white font-mono leading-relaxed focus:outline-none focus:border-blue-500" placeholder="Type post HTML here or fetch from Telegram..."></textarea>
 
           <!-- Media Attachment Zone -->
-          <div class="border border-dashed border-slate-800 hover:border-slate-700 rounded-lg p-3.5 bg-slate-950/50 flex items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400">
+          <div class="border border-dashed border-slate-800 hover:border-slate-700 rounded-lg p-3.5 bg-slate-950/50 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 flex-shrink-0">
                 <i class="fa-regular fa-image text-lg"></i>
               </div>
-              <div>
-                <p id="media-status-text" class="text-xs font-medium text-slate-300">No media attached</p>
-                <p class="text-[10px] text-slate-500">Attach a photo or video to accompany this post (optional)</p>
+              <div class="min-w-0">
+                <p id="media-status-text" class="text-xs font-medium text-slate-300 truncate">No media attached</p>
+                <p class="text-[10px] text-slate-500 truncate">Attach a photo or video to accompany this post (optional)</p>
               </div>
             </div>
 
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-shrink-0">
               <label class="cursor-pointer bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-700">
                 <span>Upload Media</span>
                 <input type="file" id="media-upload-input" onchange="uploadMediaFile(this)" accept="image/*,video/*" class="hidden">
@@ -1398,6 +1412,6 @@
     Telegram AutoPost Pro &bull; Multi-Account Posting Engine with 3D Animated Emojis &bull; Running on local server
   </footer>
 
-  <script src="app.js?v=20261101_1715"></script>
+  <script src="app.js?v=20261101_2210"></script>
 </body>
 </html>
