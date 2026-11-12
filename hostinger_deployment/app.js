@@ -44,7 +44,6 @@ window.fetch = async function(url, options = {}) {
   if (res.status === 401 && typeof url === 'string' && !url.includes('/api/auth/login') && !url.includes('/api/auth/register')) {
     stopStatusPolling();
     localStorage.removeItem('auth_token');
-    const wasAuthed = !!currentUser;
     currentUser = null;
     updateUserUI();
     const modal = document.getElementById('modal-auth');
@@ -52,6 +51,10 @@ window.fetch = async function(url, options = {}) {
     // Only open auth modal if not already open (prevents resetting the registration form)
     if (!isModalOpen) {
       openAuthModal('login');
+    }
+  } else if (res.ok && typeof url === 'string' && options.method && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(options.method.toUpperCase())) {
+    if (/\/(accounts|groups|posts|draft|config|scheduler)/.test(url) && !url.includes('/vault/')) {
+      scheduleBrowserSnapshotSync();
     }
   }
   return res;
@@ -70,6 +73,81 @@ let selectedAccountId = 'all';
 let selectedPostIds = 'all';
 let adminTargetUserId = null;
 let statusPollingInterval = null;
+let _browserSnapshotSyncTimer = null;
+let _vaultRestoreAttemptedForUser = null;
+
+function getUserSnapshotKey() {
+  if (!currentUser) return null;
+  const idPart = (currentUser.email || currentUser.username || currentUser.id || '').toLowerCase().trim();
+  return idPart ? `tg_vault_snap_${idPart}` : null;
+}
+
+function scheduleBrowserSnapshotSync() {
+  if (!currentUser) return;
+  if (_browserSnapshotSyncTimer) clearTimeout(_browserSnapshotSyncTimer);
+  _browserSnapshotSyncTimer = setTimeout(() => {
+    syncMyVaultSnapshot();
+  }, 1200);
+}
+
+async function syncMyVaultSnapshot() {
+  const key = getUserSnapshotKey();
+  if (!key || !currentUser) return;
+  try {
+    const res = await fetch('/api/vault/my_snapshot');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data && data.snapshot) {
+      localStorage.setItem(key, JSON.stringify({
+        blob: data.snapshot,
+        has_data: !!data.has_data,
+        accounts_count: data.accounts_count || 0,
+        groups_count: data.groups_count || 0,
+        posts_count: data.posts_count || 0,
+        saved_at: Date.now()
+      }));
+    }
+  } catch (e) {}
+}
+
+async function tryAutoRestoreFromBrowserSnapshot(statusData) {
+  if (!currentUser || !statusData) return;
+  const uid = currentUser.id;
+  if (_vaultRestoreAttemptedForUser === uid) return;
+  _vaultRestoreAttemptedForUser = uid;
+
+  const key = getUserSnapshotKey();
+  if (!key) return;
+
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) {
+      syncMyVaultSnapshot();
+      return;
+    }
+    const saved = JSON.parse(raw);
+    const serverLooksEmpty = (statusData.total_accounts === 0 && statusData.total_groups === 0 && statusData.total_posts <= 3);
+
+    if (serverLooksEmpty && saved && saved.has_data && saved.blob) {
+      const res = await fetch('/api/vault/restore_my_snapshot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ snapshot: saved.blob })
+      });
+      if (res.ok) {
+        const restoreRes = await res.json();
+        if (restoreRes.status === 'restored') {
+          showToast(`Restored ${restoreRes.accounts_count} account(s), ${restoreRes.groups_count} group(s) & ${restoreRes.posts_count} post(s)!`, 'success');
+          loadAllData();
+          return;
+        }
+      }
+    }
+  } catch (e) {}
+
+  // Keep snapshot up to date with latest server state
+  syncMyVaultSnapshot();
+}
 
 function startStatusPolling() {
   if (statusPollingInterval) return;
@@ -253,6 +331,19 @@ async function loadStatus() {
       document.getElementById('stat-stats').textContent = `${data.stats.total_sent} / ${data.stats.total_failed}`;
       document.getElementById('stat-lastrun').textContent = data.stats.last_run_time ? `Last: ${data.stats.last_run_time}` : 'Never run';
     }
+
+    // Show Hostinger update warning banner to Admin if vault_pull/vault_push returned 404
+    const vaultBanner = document.getElementById('cloud-vault-alert-banner');
+    if (vaultBanner) {
+      if (currentUser && currentUser.role === 'admin' && data.vault_status && data.vault_status.needs_hostinger_upload) {
+        vaultBanner.classList.remove('hidden');
+      } else {
+        vaultBanner.classList.add('hidden');
+      }
+    }
+
+    // Auto-restore encrypted browser snapshot if backend restarted without Hostinger Vault
+    tryAutoRestoreFromBrowserSnapshot(data);
   } catch (e) {
     console.error('Status fetch error:', e);
   }
@@ -1693,7 +1784,7 @@ function clearConsoleView() {
 // ----------------- AUTH & USER PORTAL -------------------
 // ========================================================
 
-async function checkCurrentUser() {
+async function checkCurrentUser(retryCount = 0) {
   const token = localStorage.getItem('auth_token');
   if (!token) {
     currentUser = null;
@@ -1710,17 +1801,27 @@ async function checkCurrentUser() {
       updateUserUI();
       closeAuthModal();
       return true;
-    } else {
+    } else if (res.status === 401 || res.status === 403) {
       localStorage.removeItem('auth_token');
       currentUser = null;
       updateUserUI();
       openAuthModal('login');
       return false;
+    } else if (retryCount < 1) {
+      // Backend waking up (502/503/504): wait briefly and retry WITHOUT erasing token
+      showToast('Backend waking up, reconnecting...', 'info');
+      await new Promise(r => setTimeout(r, 2500));
+      return await checkCurrentUser(retryCount + 1);
+    } else {
+      showToast('Backend temporarily reconnecting. Please refresh in a moment.', 'warning');
+      return false;
     }
   } catch (e) {
-    currentUser = null;
-    updateUserUI();
-    openAuthModal('login');
+    if (retryCount < 1) {
+      await new Promise(r => setTimeout(r, 2500));
+      return await checkCurrentUser(retryCount + 1);
+    }
+    showToast('Network reconnecting to backend...', 'warning');
     return false;
   }
 }
@@ -1993,6 +2094,7 @@ async function submitLogin(e) {
     if (data.status === 'direct_login' && data.token) {
       localStorage.setItem('auth_token', data.token);
       currentUser = data.user;
+      _vaultRestoreAttemptedForUser = null;
       switchTab('schedule');
       updateUserUI();
       closeAuthModal();
@@ -2080,6 +2182,7 @@ async function verifyLoginOtp() {
 
     localStorage.setItem('auth_token', data.token);
     currentUser = data.user;
+    _vaultRestoreAttemptedForUser = null;
     backToLoginStep1();
     switchTab('schedule');
     updateUserUI();
@@ -2326,6 +2429,7 @@ async function handleLogout() {
   } catch (e) {}
   localStorage.removeItem('auth_token');
   currentUser = null;
+  _vaultRestoreAttemptedForUser = null;
   
   // Wipe all session state & admin DOM tables
   const adminTbody = document.getElementById('admin-users-table-body');

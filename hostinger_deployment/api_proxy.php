@@ -128,9 +128,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'vault_push') {
     }
 
     $rawInput = file_get_contents('php://input');
-    if (empty($rawInput)) {
+    $decodedCheck = json_decode($rawInput, true);
+    if (empty($rawInput) || !is_array($decodedCheck) || !isset($decodedCheck['users'])) {
         http_response_code(400);
-        echo json_encode(["status" => "error", "message" => "Empty vault payload"]);
+        echo json_encode(["status" => "error", "message" => "Invalid or incomplete vault payload"]);
         exit;
     }
 
@@ -140,8 +141,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'vault_push') {
         @file_put_contents($vaultDir . '/.htaccess', "Deny from all\n");
     }
 
-    $saved = @file_put_contents($vaultDir . '/vault_state.json', $rawInput);
-    if ($saved !== false) {
+    $tmpFile = $vaultDir . '/vault_state.json.tmp';
+    $targetFile = $vaultDir . '/vault_state.json';
+    $saved = @file_put_contents($tmpFile, $rawInput, LOCK_EX);
+    if ($saved !== false && @rename($tmpFile, $targetFile)) {
         echo json_encode([
             "status" => "success",
             "message" => "Vault state successfully persisted to Hostinger",
@@ -149,6 +152,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'vault_push') {
             "timestamp" => date('Y-m-d H:i:s T')
         ]);
     } else {
+        @unlink($tmpFile);
         http_response_code(500);
         echo json_encode(["status" => "error", "message" => "Failed to write vault_state.json on Hostinger"]);
     }
@@ -311,7 +315,7 @@ if (!empty($_FILES)) {
 curl_setopt($ch, CURLOPT_HTTPHEADER, $headersToSend);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HEADER, true);
-curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+curl_setopt($ch, CURLOPT_TIMEOUT, 90);
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);

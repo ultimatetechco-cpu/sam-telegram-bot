@@ -3,10 +3,10 @@ import time
 from datetime import datetime, timedelta
 from typing import Dict, Any, Optional
 
-from app.config import load_config
+from app.config import load_config, save_config
 from app.poster_engine import run_single_broadcast, get_broadcast_stats
-from app.storage import add_log
-from app.auth_mgr import get_user_by_id
+from app.storage import add_log, get_accounts, get_groups
+from app.auth_mgr import get_user_by_id, load_users
 
 class UserScheduler:
     def __init__(self, user_id: Optional[str] = None):
@@ -105,7 +105,16 @@ async def _scheduler_loop(sched: UserScheduler):
     sched.next_run_timestamp = None
     add_log("INFO", f"=== Telegram Posting Automation Scheduler STOPPED for tenant [{u_label}] ===", user_id=sched.user_id)
 
-def start_scheduler(user_id: Optional[str] = None) -> Dict[str, Any]:
+def _persist_scheduler_flag(user_id: Optional[str], running: bool):
+    try:
+        cfg = load_config(user_id)
+        if cfg.get("scheduler_running") != running:
+            cfg["scheduler_running"] = running
+            save_config(cfg, user_id=user_id)
+    except Exception:
+        pass
+
+def start_scheduler(user_id: Optional[str] = None, persist: bool = True) -> Dict[str, Any]:
     if user_id and user_id not in ["admin", "user_admin"]:
         user = get_user_by_id(user_id)
         if not user or user.get("is_locked") or user.get("status") != "active":
@@ -117,12 +126,15 @@ def start_scheduler(user_id: Optional[str] = None) -> Dict[str, Any]:
 
     sched.is_running = True
     sched.stop_event.clear()
+    if persist:
+        _persist_scheduler_flag(user_id, True)
     loop = asyncio.get_event_loop()
     sched.task = loop.create_task(_scheduler_loop(sched))
     return {"status": "started", "message": "Scheduler started successfully."}
 
 def stop_scheduler(user_id: Optional[str] = None) -> Dict[str, Any]:
     sched = get_user_scheduler(user_id)
+    _persist_scheduler_flag(user_id, False)
     if not sched.is_running:
         return {"status": "not_running", "message": "Scheduler is not currently running."}
 
@@ -132,6 +144,31 @@ def stop_scheduler(user_id: Optional[str] = None) -> Dict[str, Any]:
     if sched.task and not sched.task.done():
         sched.task.cancel()
     return {"status": "stopped", "message": "Scheduler stopped."}
+
+async def resume_saved_schedulers():
+    """Auto-resumes background posting loops that were running prior to a server restart."""
+    try:
+        candidate_ids = ["admin"]
+        for u in load_users():
+            uid = u.get("id")
+            if uid and uid not in ["user_admin", "admin"]:
+                candidate_ids.append(uid)
+
+        for uid in candidate_ids:
+            cfg = load_config(uid)
+            if not cfg.get("scheduler_running"):
+                continue
+            if uid not in ["admin", "user_admin"]:
+                user = get_user_by_id(uid)
+                if not user or user.get("is_locked") or user.get("status") != "active":
+                    continue
+            if not get_accounts(uid) or not get_groups(uid):
+                continue
+            res = start_scheduler(uid, persist=False)
+            if res.get("status") == "started":
+                add_log("INFO", "Auto-resumed active background posting automation after server restart.", user_id=uid)
+    except Exception as e:
+        add_log("WARNING", f"Failed to auto-resume schedulers: {e}", user_id="admin")
 
 async def trigger_now(user_id: Optional[str] = None) -> Dict[str, Any]:
     """

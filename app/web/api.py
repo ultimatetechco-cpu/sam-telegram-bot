@@ -59,6 +59,7 @@ from app.auth_mgr import (
     get_all_users_for_admin,
     admin_change_password,
     admin_update_email,
+    create_signed_token,
     PLANS
 )
 from app.telegram_mgr import (
@@ -74,7 +75,16 @@ from app.scheduler_service import (
     get_scheduler_status,
     start_scheduler,
     stop_scheduler,
-    trigger_now
+    trigger_now,
+    resume_saved_schedulers
+)
+from app.cloud_vault import (
+    start_cloud_vault_service,
+    get_vault_status,
+    push_vault_state,
+    schedule_vault_push,
+    export_tenant_snapshot,
+    restore_tenant_snapshot
 )
 from app.emoji_parser import extract_custom_emojis, parse_html_to_message_and_entities
 from app.email_service import (
@@ -100,15 +110,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Startup event to ensure auth database is initialized and Cloud Vault sync is active
+# Startup event to ensure auth database is initialized, Cloud Vault restored BEFORE traffic, and active schedulers resumed
 @app.on_event("startup")
 async def startup_event():
     init_auth()
     try:
-        from app.cloud_vault import start_cloud_vault_service
-        asyncio.create_task(start_cloud_vault_service())
+        await start_cloud_vault_service()
+        init_auth()
+        await resume_saved_schedulers()
     except Exception as e:
         print(f"Failed to start Cloud Vault service: {e}")
+
+@app.get("/api/health")
+async def api_health():
+    return {"status": "ok", "vault": get_vault_status()}
 
 # Ensure media directory exists
 MEDIA_DIR.mkdir(parents=True, exist_ok=True)
@@ -325,10 +340,9 @@ async def api_login_verify_otp(req: LoginVerifyOtpRequest, response: Response):
         if not user:
             raise HTTPException(status_code=404, detail="User account not found.")
 
-        import secrets
         from datetime import datetime
         from app.auth_mgr import ACTIVE_TOKENS, save_auth_sessions
-        token = secrets.token_urlsafe(32)
+        token = create_signed_token(user)
         session_data = {
             "token": token,
             "user_id": user["id"],
@@ -582,6 +596,7 @@ async def api_save_email_config(req: EmailConfigModel, admin: Dict[str, Any] = D
     elif cfg_to_save.get("smtp_password"):
         cfg_to_save["smtp_password"] = cfg_to_save["smtp_password"].replace(" ", "").strip()
     save_email_config(cfg_to_save)
+    schedule_vault_push()
     add_log("INFO", "Admin updated SMTP email configuration.", user_id="admin")
     return {"status": "success", "message": "Email settings saved successfully."}
 
@@ -665,8 +680,28 @@ async def api_status(current_user: Dict[str, Any] = Depends(get_current_user)):
         "total_groups": len(groups),
         "total_posts": len(all_posts),
         "active_posts": len(active_posts),
-        "posts": all_posts
+        "posts": all_posts,
+        "vault_status": get_vault_status()
     }
+
+@app.get("/api/vault/my_snapshot")
+async def api_vault_my_snapshot(current_user: Dict[str, Any] = Depends(get_current_user)):
+    return export_tenant_snapshot(current_user)
+
+class RestoreSnapshotBody(BaseModel):
+    snapshot: str
+
+@app.post("/api/vault/restore_my_snapshot")
+async def api_vault_restore_my_snapshot(body: RestoreSnapshotBody, current_user: Dict[str, Any] = Depends(get_current_user)):
+    res = restore_tenant_snapshot(body.snapshot, current_user)
+    if res.get("status") != "restored":
+        raise HTTPException(status_code=400, detail=res.get("message", "Could not restore backup."))
+    return res
+
+@app.post("/api/vault/sync_now")
+async def api_vault_sync_now(admin: Dict[str, Any] = Depends(get_admin_user)):
+    ok = await push_vault_state(force=True)
+    return {"status": "success" if ok else "error", "vault_status": get_vault_status()}
 
 @app.get("/api/config")
 async def api_get_config(current_user: Dict[str, Any] = Depends(get_current_user)):

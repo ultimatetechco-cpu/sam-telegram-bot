@@ -139,6 +139,21 @@
     </div>
   </div>
 
+  <!-- Cloud Vault Sync Alert Banner (Admin Only if Hostinger api_proxy.php needs update) -->
+  <div id="cloud-vault-alert-banner" class="hidden bg-amber-950/90 border-b border-amber-500/40 px-4 py-2.5 text-amber-200 text-xs">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4 flex-wrap">
+      <div class="flex items-center gap-2.5">
+        <i class="fa-solid fa-cloud-arrow-up text-amber-400 text-base"></i>
+        <span id="cloud-vault-alert-text">
+          <b>Action Required for 24/7 Cloud Persistence:</b> Hostinger's <code>api_proxy.php</code> is outdated. Extract the latest <code>hostinger_live_ready.zip</code> in Hostinger File Manager (<code>public_html/telegrambot/</code>) so all tenant accounts, groups &amp; posts persist when your laptop is off.
+        </span>
+      </div>
+      <span class="px-2.5 py-1 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold uppercase text-[10px] tracking-wider whitespace-nowrap">
+        Hostinger Update Needed
+      </span>
+    </div>
+  </div>
+
   <!-- Notification Toast Container -->
   <div id="toast-container" class="fixed top-20 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
@@ -1412,6 +1427,6 @@
     Telegram AutoPost Pro &bull; Multi-Account Posting Engine with 3D Animated Emojis &bull; Running on local server
   </footer>
 
-  <script src="app.js?v=20261101_2210"></script>
+  <script src="app.js?v=20261112_1350"></script>
 </body>
 </html>

@@ -1,4 +1,6 @@
+import base64
 import hashlib
+import hmac
 import json
 import math
 import os
@@ -9,6 +11,10 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional
 
 from app.config import DATA_DIR, ensure_directories
+
+TOKEN_SIGNING_SECRET = os.environ.get("VAULT_SECRET", "sam_telegram_autopost_live_sync_2026_x99") + "_auth_token_key"
+TOKEN_SIGNING_KEY = hashlib.sha256(TOKEN_SIGNING_SECRET.encode("utf-8")).digest()
+REVOKED_TOKENS: set = set()
 
 USERS_FILE = DATA_DIR / "users.json"
 SESSIONS_FILE = DATA_DIR / "auth_sessions.json"
@@ -233,6 +239,40 @@ def update_subscription_status(user: Dict[str, Any]) -> Dict[str, Any]:
 
     return user
 
+def create_signed_token(user: Dict[str, Any], ttl_days: int = 30) -> str:
+    """Generates an HMAC-signed stateless auth token that survives server restarts."""
+    payload = {
+        "uid": user["id"],
+        "un": user.get("username", ""),
+        "role": user.get("role", "user"),
+        "exp": int(time.time()) + ttl_days * 86400,
+        "jti": secrets.token_hex(6)
+    }
+    raw = json.dumps(payload, separators=(",", ":")).encode("utf-8")
+    b64 = base64.urlsafe_b64encode(raw).decode("ascii").rstrip("=")
+    sig = hmac.new(TOKEN_SIGNING_KEY, b64.encode("ascii"), hashlib.sha256).hexdigest()[:32]
+    return f"v1.{b64}.{sig}"
+
+def verify_signed_token(token: str) -> Optional[Dict[str, Any]]:
+    """Verifies a stateless v1.<payload>.<sig> token."""
+    try:
+        if not token or not token.startswith("v1."):
+            return None
+        parts = token.split(".")
+        if len(parts) != 3:
+            return None
+        _, b64, sig = parts
+        expected_sig = hmac.new(TOKEN_SIGNING_KEY, b64.encode("ascii"), hashlib.sha256).hexdigest()[:32]
+        if not hmac.compare_digest(sig, expected_sig):
+            return None
+        pad = "=" * ((4 - len(b64) % 4) % 4)
+        payload = json.loads(base64.urlsafe_b64decode(b64 + pad).decode("utf-8"))
+        if int(payload.get("exp", 0)) < int(time.time()):
+            return None
+        return payload
+    except Exception:
+        return None
+
 def register_user(username: str, email: str, password: str, plan_tier: str = "tier_1") -> Dict[str, Any]:
     username = username.strip()
     email = email.strip()
@@ -271,7 +311,7 @@ def register_user(username: str, email: str, password: str, plan_tier: str = "ti
     users.append(new_user)
     save_users(users)
 
-    token = secrets.token_urlsafe(32)
+    token = create_signed_token(new_user)
     session_data = {
         "token": token,
         "user_id": new_user["id"],
@@ -297,7 +337,7 @@ def login_user(username: str, password: str) -> Dict[str, Any]:
     if not verify_password(password, user["password_hash"], user["salt"]):
         raise ValueError("Invalid username or password.")
 
-    token = secrets.token_urlsafe(32)
+    token = create_signed_token(user)
     session_data = {
         "token": token,
         "user_id": user["id"],
@@ -314,22 +354,35 @@ def login_user(username: str, password: str) -> Dict[str, Any]:
     }
 
 def logout_user(token: str) -> None:
+    REVOKED_TOKENS.add(token)
     if token in ACTIVE_TOKENS:
         del ACTIVE_TOKENS[token]
         save_auth_sessions()
 
 def authenticate_token(token: Optional[str]) -> Optional[Dict[str, Any]]:
-    if not token:
+    if not token or token in REVOKED_TOKENS:
         return None
     session = ACTIVE_TOKENS.get(token)
     if not session:
         # Try reloading sessions from disk
         load_auth_sessions()
         session = ACTIVE_TOKENS.get(token)
-    if not session:
-        return None
+    if session:
+        return get_user_by_id(session["user_id"])
 
-    user = get_user_by_id(session["user_id"])
+    # Fall back to cryptographic stateless token verification across server restarts
+    payload = verify_signed_token(token)
+    if not payload:
+        return None
+    user = get_user_by_id(payload["uid"])
+    if user:
+        ACTIVE_TOKENS[token] = {
+            "token": token,
+            "user_id": user["id"],
+            "username": user["username"],
+            "role": user["role"],
+            "login_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
     return user
 
 def sanitize_user(user: Dict[str, Any]) -> Dict[str, Any]:
@@ -414,7 +467,7 @@ def admin_set_user_status(user_id: str, status: str) -> Dict[str, Any]:
 def admin_delete_user(user_id: str) -> bool:
     users = load_users()
     initial_len = len(users)
-    users = [u for u in users if u["id"] != user_id and u.get("role") != "admin"]
+    users = [u for u in users if u["id"] != user_id or u.get("role") == "admin"]
     if len(users) < initial_len:
         save_users(users)
         # Clean user directory

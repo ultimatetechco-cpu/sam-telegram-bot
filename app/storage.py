@@ -170,12 +170,14 @@ def delete_account(account_id: str, user_id: Optional[str] = None) -> bool:
     if account_to_remove:
         accounts.remove(account_to_remove)
         save_accounts(accounts, user_id)
-        session_file = SESSIONS_DIR / f"{account_id}.session"
-        if session_file.exists():
-            try:
-                os.remove(session_file)
-            except Exception:
-                pass
+        for s_name in {account_id, account_to_remove.get("session_name")}:
+            if s_name:
+                session_file = SESSIONS_DIR / f"{s_name}.session"
+                if session_file.exists():
+                    try:
+                        os.remove(session_file)
+                    except Exception:
+                        pass
         return True
     return False
 
@@ -307,7 +309,7 @@ def get_posts(user_id: Optional[str] = None) -> List[Dict[str, Any]]:
 
     # Provide default posts if fresh user
     initial = [dict(p) for p in DEFAULT_POSTS]
-    save_posts(initial, user_id)
+    save_posts(initial, user_id, sync_vault=False)
     return initial
 
 def save_posts(posts: List[Dict[str, Any]], user_id: Optional[str] = None, sync_vault: bool = True) -> None:
