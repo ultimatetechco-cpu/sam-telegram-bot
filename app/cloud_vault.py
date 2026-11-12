@@ -488,7 +488,7 @@ def _xor_keystream(nonce: bytes, length: int) -> bytes:
 
 def encrypt_user_snapshot(data: Dict[str, Any]) -> str:
     """Encrypts and HMAC-authenticates a tenant snapshot using stdlib crypto."""
-    raw = zlib.compress(json.dumps(data, ensure_ascii=False).encode("utf-8"), level=6)
+    raw = zlib.compress(json.dumps(data, ensure_ascii=False).encode("utf-8"), 6)
     nonce = secrets.token_bytes(16)
     ks = _xor_keystream(nonce, len(raw))
     ciphertext = bytes(a ^ b for a, b in zip(raw, ks))
