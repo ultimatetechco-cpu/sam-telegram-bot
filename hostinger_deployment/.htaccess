@@ -1,6 +1,6 @@
 # ========================================================
 # Hostinger LiteSpeed Web Server Configuration
-# Telegram AutoPost Pro
+# Telegram AutoPost Pro - Hardened Security Configuration
 # ========================================================
 
 Options -Indexes +FollowSymLinks
@@ -10,6 +10,11 @@ DirectoryIndex index.html index.php
     Header set Cache-Control "no-cache, no-store, must-revalidate"
     Header set Pragma "no-cache"
     Header set Expires 0
+    # Core Security Headers
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
 <IfModule mod_rewrite.c>
@@ -19,18 +24,35 @@ DirectoryIndex index.html index.php
     RewriteCond %{HTTP:Authorization} ^(.*)
     RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
 
-    # Route /api/... to api_proxy.php
+    # 1. HARDENED SECURITY: Block direct HTTP access to sensitive directories
+    RewriteRule ^(storage_vault|data|sessions|\.git)(/.*)?$ - [F,L]
+
+    # 2. HARDENED SECURITY: Block direct access to database, config, session & log files
+    RewriteRule \.(json|session|env|log|git|tmp|bak|sql|sh|yml|yaml|sqlite|db)$ - [F,L]
+
+    # 3. Route /api/... to api_proxy.php
     RewriteRule ^api/(.*)$ api_proxy.php?route=$1 [QSA,L]
     RewriteRule ^api/?$ api_proxy.php [QSA,L]
 
-    # Route /media/... to api_proxy.php for post images/videos
+    # 4. Route /media/... to api_proxy.php for post images/videos
     RewriteRule ^media/(.*)$ api_proxy.php?route=media/$1 [QSA,L]
 
-    # If the requested file or directory exists physically, serve directly
+    # 5. If requested file or directory exists physically, serve directly (only safe public assets)
     RewriteCond %{REQUEST_FILENAME} -f [OR]
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteRule ^ - [L]
 
-    # Single Page App routing: fallback to index.html
+    # 6. Single Page App routing: fallback to index.html
     RewriteRule ^(.*)$ index.html [L]
 </IfModule>
+
+# Defense-in-depth: Deny direct access to sensitive extensions across Apache/LiteSpeed
+<FilesMatch "\.(json|session|env|log|git|tmp|bak|sql|sh|yml|yaml|sqlite|db)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Deny from all
+    </IfModule>
+</FilesMatch>

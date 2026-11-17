@@ -8,6 +8,40 @@
 error_reporting(0);
 @ini_set('display_errors', '0');
 
+// Hardened Security: Standardized response headers
+header("X-Frame-Options: SAMEORIGIN");
+header("X-Content-Type-Options: nosniff");
+header("X-XSS-Protection: 1; mode=block");
+header("Referrer-Policy: strict-origin-when-cross-origin");
+
+// Encryption at Rest for Hostinger Cloud Vault (AES-256-CBC + HMAC-SHA256)
+function vault_encrypt($data, $secret) {
+    if (empty($data)) return $data;
+    $key = hash('sha256', $secret . '_vault_encryption_key_v2', true);
+    $iv = openssl_random_pseudo_bytes(16);
+    $ciphertext = openssl_encrypt($data, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
+    if ($ciphertext === false) return $data;
+    $mac = hash_hmac('sha256', $iv . $ciphertext, $key, true);
+    return 'ENC_V2:' . base64_encode($iv . $mac . $ciphertext);
+}
+
+function vault_decrypt($encryptedStr, $secret) {
+    if (empty($encryptedStr)) return $encryptedStr;
+    if (strpos($encryptedStr, 'ENC_V2:') !== 0) {
+        return $encryptedStr; // Return plain text for backward compatibility
+    }
+    $raw = base64_decode(substr($encryptedStr, 7));
+    if (strlen($raw) < 48) return null;
+    $iv = substr($raw, 0, 16);
+    $mac = substr($raw, 16, 32);
+    $ciphertext = substr($raw, 48);
+    $key = hash('sha256', $secret . '_vault_encryption_key_v2', true);
+    $expectedMac = hash_hmac('sha256', $iv . $ciphertext, $key, true);
+    if (!hash_equals($mac, $expectedMac)) return null;
+    $plain = openssl_decrypt($ciphertext, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
+    return $plain !== false ? $plain : null;
+}
+
 // Load backend target URL directly (bypassing OPcache)
 $backend_url = "https://sam-telegram-bot-hgm1.onrender.com";
 $config_file = __DIR__ . '/config.php';
@@ -138,16 +172,17 @@ if (isset($_GET['action']) && $_GET['action'] === 'vault_push') {
     $vaultDir = __DIR__ . '/storage_vault';
     if (!is_dir($vaultDir)) {
         @mkdir($vaultDir, 0755, true);
-        @file_put_contents($vaultDir . '/.htaccess', "Deny from all\n");
+        @file_put_contents($vaultDir . '/.htaccess', "<IfModule mod_authz_core.c>\n    Require all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\n    Deny from all\n</IfModule>\n");
     }
 
     $tmpFile = $vaultDir . '/vault_state.json.tmp';
     $targetFile = $vaultDir . '/vault_state.json';
-    $saved = @file_put_contents($tmpFile, $rawInput, LOCK_EX);
+    $encryptedPayload = vault_encrypt($rawInput, $EXPECTED_SECRET);
+    $saved = @file_put_contents($tmpFile, $encryptedPayload, LOCK_EX);
     if ($saved !== false && @rename($tmpFile, $targetFile)) {
         echo json_encode([
             "status" => "success",
-            "message" => "Vault state successfully persisted to Hostinger",
+            "message" => "Vault state successfully persisted & encrypted to Hostinger",
             "bytes" => $saved,
             "timestamp" => date('Y-m-d H:i:s T')
         ]);
@@ -186,7 +221,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'vault_pull') {
 
     $content = @file_get_contents($vaultFile);
     if ($content) {
-        echo $content;
+        $decrypted = vault_decrypt($content, $EXPECTED_SECRET);
+        echo $decrypted ?: $content;
     } else {
         echo json_encode(["status" => "empty", "message" => "Vault file empty", "vault" => null]);
     }
@@ -395,9 +431,9 @@ if ($httpCode >= 200 && $httpCode < 300) {
         $accCacheFile = $userVaultDir . '/accounts.json';
         if (is_array($accs) && count($accs) > 0) {
             if (!is_dir($userVaultDir)) { @mkdir($userVaultDir, 0755, true); }
-            @file_put_contents($accCacheFile, $resBody);
+            @file_put_contents($accCacheFile, vault_encrypt($resBody, $EXPECTED_SECRET));
         } elseif ((!is_array($accs) || count($accs) === 0) && file_exists($accCacheFile)) {
-            $cachedAccs = @file_get_contents($accCacheFile);
+            $cachedAccs = vault_decrypt(@file_get_contents($accCacheFile), $EXPECTED_SECRET);
             $decodedCached = @json_decode($cachedAccs, true);
             if (is_array($decodedCached) && count($decodedCached) > 0) {
                 $resBody = $cachedAccs;
@@ -408,12 +444,12 @@ if ($httpCode >= 200 && $httpCode < 300) {
         $parts = explode('/', $route);
         $delId = end($parts);
         if (file_exists($accCacheFile) && !empty($delId)) {
-            $existing = @json_decode(@file_get_contents($accCacheFile), true);
+            $existing = @json_decode(vault_decrypt(@file_get_contents($accCacheFile), $EXPECTED_SECRET), true);
             if (is_array($existing)) {
                 $existing = array_values(array_filter($existing, function($a) use ($delId) {
                     return ($a['id'] ?? '') !== $delId;
                 }));
-                @file_put_contents($accCacheFile, json_encode($existing, JSON_PRETTY_PRINT));
+                @file_put_contents($accCacheFile, vault_encrypt(json_encode($existing, JSON_PRETTY_PRINT), $EXPECTED_SECRET));
             }
         }
     }
@@ -424,9 +460,9 @@ if ($httpCode >= 200 && $httpCode < 300) {
         $grpCacheFile = $userVaultDir . '/groups.json';
         if (is_array($grps) && count($grps) > 0) {
             if (!is_dir($userVaultDir)) { @mkdir($userVaultDir, 0755, true); }
-            @file_put_contents($grpCacheFile, $resBody);
+            @file_put_contents($grpCacheFile, vault_encrypt($resBody, $EXPECTED_SECRET));
         } elseif ((!is_array($grps) || count($grps) === 0) && file_exists($grpCacheFile)) {
-            $cachedGrps = @file_get_contents($grpCacheFile);
+            $cachedGrps = vault_decrypt(@file_get_contents($grpCacheFile), $EXPECTED_SECRET);
             $decodedCached = @json_decode($cachedGrps, true);
             if (is_array($decodedCached) && count($decodedCached) > 0) {
                 $resBody = $cachedGrps;
@@ -437,12 +473,12 @@ if ($httpCode >= 200 && $httpCode < 300) {
         $grpCacheFile = $userVaultDir . '/groups.json';
         if (is_array($grps) && count($grps) > 0) {
             if (!is_dir($userVaultDir)) { @mkdir($userVaultDir, 0755, true); }
-            @file_put_contents($grpCacheFile, $resBody);
+            @file_put_contents($grpCacheFile, vault_encrypt($resBody, $EXPECTED_SECRET));
         }
     } elseif ($route === 'groups' && $method === 'DELETE') {
         $grpCacheFile = $userVaultDir . '/groups.json';
         if (file_exists($grpCacheFile)) {
-            @file_put_contents($grpCacheFile, '[]');
+            @file_put_contents($grpCacheFile, vault_encrypt('[]', $EXPECTED_SECRET));
         }
     }
 
@@ -453,9 +489,9 @@ if ($httpCode >= 200 && $httpCode < 300) {
         $isDefault = is_array($posts) && count($posts) <= 3;
         if (is_array($posts) && count($posts) > 0 && !$isDefault) {
             if (!is_dir($userVaultDir)) { @mkdir($userVaultDir, 0755, true); }
-            @file_put_contents($postCacheFile, $resBody);
+            @file_put_contents($postCacheFile, vault_encrypt($resBody, $EXPECTED_SECRET));
         } elseif ($isDefault && file_exists($postCacheFile)) {
-            $cachedPosts = @file_get_contents($postCacheFile);
+            $cachedPosts = vault_decrypt(@file_get_contents($postCacheFile), $EXPECTED_SECRET);
             $decodedCached = @json_decode($cachedPosts, true);
             if (is_array($decodedCached) && count($decodedCached) > count($posts)) {
                 $resBody = $cachedPosts;
@@ -465,7 +501,7 @@ if ($httpCode >= 200 && $httpCode < 300) {
         $pData = @json_decode($resBody, true);
         if (!empty($pData['id'])) {
             $postCacheFile = $userVaultDir . '/posts.json';
-            $existing = file_exists($postCacheFile) ? (@json_decode(@file_get_contents($postCacheFile), true) ?: []) : [];
+            $existing = file_exists($postCacheFile) ? (@json_decode(vault_decrypt(@file_get_contents($postCacheFile), $EXPECTED_SECRET), true) ?: []) : [];
             $found = false;
             foreach ($existing as &$ep) {
                 if (($ep['id'] ?? '') === $pData['id']) {
@@ -476,19 +512,19 @@ if ($httpCode >= 200 && $httpCode < 300) {
             }
             if (!$found) { $existing[] = $pData; }
             if (!is_dir($userVaultDir)) { @mkdir($userVaultDir, 0755, true); }
-            @file_put_contents($postCacheFile, json_encode($existing, JSON_PRETTY_PRINT));
+            @file_put_contents($postCacheFile, vault_encrypt(json_encode($existing, JSON_PRETTY_PRINT), $EXPECTED_SECRET));
         }
     } elseif (strpos($route, 'posts/') === 0 && $method === 'DELETE') {
         $postCacheFile = $userVaultDir . '/posts.json';
         $parts = explode('/', $route);
         $delId = end($parts);
         if (file_exists($postCacheFile) && !empty($delId)) {
-            $existing = @json_decode(@file_get_contents($postCacheFile), true);
+            $existing = @json_decode(vault_decrypt(@file_get_contents($postCacheFile), $EXPECTED_SECRET), true);
             if (is_array($existing)) {
                 $existing = array_values(array_filter($existing, function($p) use ($delId) {
                     return ($p['id'] ?? '') !== $delId;
                 }));
-                @file_put_contents($postCacheFile, json_encode($existing, JSON_PRETTY_PRINT));
+                @file_put_contents($postCacheFile, vault_encrypt(json_encode($existing, JSON_PRETTY_PRINT), $EXPECTED_SECRET));
             }
         }
     }
@@ -501,20 +537,20 @@ if ($httpCode >= 200 && $httpCode < 300) {
             $grpCache = $userVaultDir . '/groups.json';
             $postCache = $userVaultDir . '/posts.json';
             if (isset($stData['total_accounts']) && $stData['total_accounts'] === 0 && file_exists($accCache)) {
-                $sAccs = @json_decode(@file_get_contents($accCache), true);
+                $sAccs = @json_decode(vault_decrypt(@file_get_contents($accCache), $EXPECTED_SECRET), true);
                 if (is_array($sAccs) && count($sAccs) > 0) {
                     $stData['total_accounts'] = count($sAccs);
                     $stData['active_accounts'] = count(array_filter($sAccs, function($a) { return ($a['is_active'] ?? true) !== false; }));
                 }
             }
             if (isset($stData['total_groups']) && $stData['total_groups'] === 0 && file_exists($grpCache)) {
-                $sGrps = @json_decode(@file_get_contents($grpCache), true);
+                $sGrps = @json_decode(vault_decrypt(@file_get_contents($grpCache), $EXPECTED_SECRET), true);
                 if (is_array($sGrps) && count($sGrps) > 0) {
                     $stData['total_groups'] = count($sGrps);
                 }
             }
             if (file_exists($postCache)) {
-                $sPosts = @json_decode(@file_get_contents($postCache), true);
+                $sPosts = @json_decode(vault_decrypt(@file_get_contents($postCache), $EXPECTED_SECRET), true);
                 if (is_array($sPosts) && count($sPosts) > 3) {
                     $stData['total_posts'] = count($sPosts);
                     $stData['active_posts'] = count(array_filter($sPosts, function($p) { return ($p['is_active'] ?? true) !== false; }));

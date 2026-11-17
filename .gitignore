@@ -15,3 +15,8 @@ ho/
 
 # Session journals
 *.session-journal
+
+# Vault and user runtime data
+storage_vault/*
+!storage_vault/.htaccess
+hostinger new/

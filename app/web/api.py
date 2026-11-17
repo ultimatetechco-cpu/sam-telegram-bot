@@ -281,19 +281,66 @@ async def api_register_verify_otp(req: RegisterVerifyOtpRequest, response: Respo
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# ----------------- BRUTE-FORCE RATE LIMITER & SHIELD -----------------
+LOGIN_ATTEMPTS: Dict[str, List[float]] = {}
+LOCKOUTS: Dict[str, float] = {}
+
+def get_client_ip(request: Request) -> str:
+    cf_ip = request.headers.get("cf-connecting-ip")
+    if cf_ip:
+        return cf_ip.strip()
+    x_forwarded = request.headers.get("x-forwarded-for")
+    if x_forwarded:
+        return x_forwarded.split(",")[0].strip()
+    return request.client.host if request.client else "127.0.0.1"
+
+def check_login_rate_limit(client_ip: str):
+    now = time.time()
+    if client_ip in LOCKOUTS:
+        remaining = int(LOCKOUTS[client_ip] - now)
+        if remaining > 0:
+            raise HTTPException(
+                status_code=429,
+                detail=f"Too many failed login attempts. Security lockout active for {remaining} more seconds. Please wait."
+            )
+        else:
+            del LOCKOUTS[client_ip]
+
+def record_failed_login(client_ip: str, username: str):
+    now = time.time()
+    attempts = [t for t in LOGIN_ATTEMPTS.get(client_ip, []) if now - t < 600]
+    attempts.append(now)
+    LOGIN_ATTEMPTS[client_ip] = attempts
+    if len(attempts) >= 5:
+        LOCKOUTS[client_ip] = now + 900  # 15 minutes lockout
+        add_log("WARNING", f"[SECURITY ALERT] IP {client_ip} locked out for 15 minutes after 5 failed login attempts for user '{username}'.", user_id="admin")
+        raise HTTPException(
+            status_code=429,
+            detail="Too many failed login attempts. Your IP has been temporarily locked out for 15 minutes for security."
+        )
+
+def record_successful_login(client_ip: str):
+    LOGIN_ATTEMPTS.pop(client_ip, None)
+    LOCKOUTS.pop(client_ip, None)
+
 # 3. Login: Step 1 - Validate Credentials & Dispatch OTP to Registered Email
 @app.post("/api/auth/login/request_otp")
-async def api_login_request_otp(req: LoginRequest):
+async def api_login_request_otp(req: LoginRequest, request: Request):
+    client_ip = get_client_ip(request)
+    check_login_rate_limit(client_ip)
     try:
         user = get_user_by_username(req.username)
         if not user:
             user = get_user_by_email(req.username)
         if not user:
+            record_failed_login(client_ip, req.username)
             raise HTTPException(status_code=401, detail="Invalid username or password.")
 
         if not verify_password(req.password, user["password_hash"], user["salt"]):
+            record_failed_login(client_ip, req.username)
             raise HTTPException(status_code=401, detail="Invalid username or password.")
 
+        record_successful_login(client_ip)
         user_email = user.get("email")
         cfg = load_email_config()
         has_smtp = bool(cfg.get("smtp_password", "").strip())
@@ -433,9 +480,12 @@ async def api_register(req: RegisterRequest, response: Response):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/auth/login")
-async def api_login(req: LoginRequest, response: Response):
+async def api_login(req: LoginRequest, request: Request, response: Response):
+    client_ip = get_client_ip(request)
+    check_login_rate_limit(client_ip)
     try:
         data = login_user(req.username, req.password)
+        record_successful_login(client_ip)
         response.set_cookie(
             key="auth_token",
             value=data["token"],
@@ -443,10 +493,13 @@ async def api_login(req: LoginRequest, response: Response):
             max_age=30 * 86400,
             samesite="lax"
         )
-        add_log("INFO", f"User logged in: @{data['user']['username']} (Role: {data['user']['role']})", user_id=data['user']['id'])
+        add_log("INFO", f"User logged in: @{data['user']['username']} (Role: {data['user']['role']}) from IP {client_ip}", user_id=data['user']['id'])
         return data
     except ValueError as e:
+        record_failed_login(client_ip, req.username)
         raise HTTPException(status_code=401, detail=str(e))
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -478,7 +531,7 @@ async def api_admin_get_users(admin: Dict[str, Any] = Depends(get_admin_user)):
         accs = get_accounts(uid)
         grps = get_groups(uid)
         posts = get_posts(uid)
-        u_copy = dict(u)
+        u_copy = sanitize_user(u)
         u_copy["accounts_count"] = len(accs)
         u_copy["groups_count"] = len(grps)
         u_copy["posts_count"] = len(posts)
@@ -754,6 +807,9 @@ async def api_get_accounts(current_user: Dict[str, Any] = Depends(get_current_us
         ac = dict(a)
         if "api_hash" in ac and len(ac["api_hash"]) > 6:
             ac["api_hash_masked"] = ac["api_hash"][:3] + "..." + ac["api_hash"][-3:]
+        # Remove raw sensitive credentials from response
+        ac.pop("api_hash", None)
+        ac.pop("string_session", None)
         safe_accounts.append(ac)
     return safe_accounts
 
