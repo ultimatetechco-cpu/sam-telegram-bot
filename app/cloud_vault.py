@@ -16,7 +16,7 @@ from typing import Dict, Any, Optional, List
 
 from telethon.sessions import StringSession, SQLiteSession
 
-from app.config import DATA_DIR, MEDIA_DIR, SESSIONS_DIR, ensure_directories
+from app.config import DATA_DIR, MEDIA_DIR, SESSIONS_DIR, ensure_directories, load_config, save_config
 from app.storage import (
     get_accounts,
     save_accounts,
@@ -24,8 +24,6 @@ from app.storage import (
     save_posts,
     get_groups,
     save_groups,
-    load_config,
-    save_config,
     add_log
 )
 from app.auth_mgr import (
