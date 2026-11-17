@@ -82,6 +82,34 @@ function getUserSnapshotKey() {
   return idPart ? `tg_vault_snap_${idPart}` : null;
 }
 
+// ----------------- TENANT PERMANENT CLIENT-SIDE CACHE -----------------
+function getTenantCacheKey(entity) {
+  if (!currentUser) return null;
+  const uid = (currentUser.id || currentUser.email || currentUser.username || 'user').toLowerCase().trim();
+  return `tg_cache_${entity}_${uid}`;
+}
+
+function getTenantCachedData(entity) {
+  const k = getTenantCacheKey(entity);
+  if (!k) return null;
+  try {
+    const raw = localStorage.getItem(k);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    return Array.isArray(data) ? data : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function setTenantCachedData(entity, data) {
+  const k = getTenantCacheKey(entity);
+  if (!k || !Array.isArray(data)) return;
+  try {
+    localStorage.setItem(k, JSON.stringify(data));
+  } catch (e) {}
+}
+
 function scheduleBrowserSnapshotSync() {
   if (!currentUser) return;
   if (_browserSnapshotSyncTimer) clearTimeout(_browserSnapshotSyncTimer);
@@ -681,7 +709,31 @@ function updateSchedulePostsBadge() {
 async function loadPosts() {
   try {
     const res = await fetch('/api/posts');
-    const posts = await res.json();
+    let posts = [];
+    if (res.ok) {
+      posts = await res.json();
+    }
+    if (!Array.isArray(posts)) posts = [];
+
+    const cachedPosts = getTenantCachedData('posts');
+    const isDefault = posts.length <= 3 && !posts.some(p => p.times_posted || p.custom_emojis_count || p.has_media || (p.text && !p.text.includes('Welcome Announcement')));
+
+    if (posts.length > 0 && !isDefault) {
+      setTenantCachedData('posts', posts);
+    } else if (cachedPosts && cachedPosts.length > 0 && (isDefault || !posts.length)) {
+      posts = cachedPosts;
+      // Auto-restore custom posts to backend so scheduler has them
+      try {
+        for (const cp of cachedPosts) {
+          fetch('/api/posts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(cp)
+          }).catch(() => {});
+        }
+      } catch (e) {}
+    }
+
     allPosts = posts;
 
     const container = document.getElementById('post-pills-container');
@@ -894,6 +946,11 @@ async function deleteCurrentPost() {
   try {
     const res = await fetch(`/api/posts/${currentPost.id}`, { method: 'DELETE' });
     const data = await res.json();
+    const cached = getTenantCachedData('posts');
+    if (cached) {
+      const updated = cached.filter(p => p.id !== currentPost.id);
+      setTenantCachedData('posts', updated);
+    }
     showToast('Post removed from campaign', 'info');
     currentPost = null;
     await loadPosts();
@@ -1277,7 +1334,19 @@ async function importSelectedScannedGroups() {
 async function loadAccounts() {
   try {
     const res = await fetch('/api/accounts');
-    const accounts = await res.json();
+    let accounts = [];
+    if (res.ok) {
+      accounts = await res.json();
+    }
+    if (!Array.isArray(accounts)) accounts = [];
+
+    const cachedAccounts = getTenantCachedData('accounts');
+    if (accounts.length > 0) {
+      setTenantCachedData('accounts', accounts);
+    } else if (cachedAccounts && cachedAccounts.length > 0) {
+      accounts = cachedAccounts;
+    }
+
     allAccounts = accounts;
     populateAccountSelector(accounts);
     populatePostAccountAssignOptions();
@@ -1593,6 +1662,11 @@ async function deleteAccount(accId) {
   try {
     const res = await fetch(`/api/accounts/${accId}`, { method: 'DELETE' });
     const data = await res.json();
+    const cached = getTenantCachedData('accounts');
+    if (cached) {
+      const updated = cached.filter(a => a.id !== accId);
+      setTenantCachedData('accounts', updated);
+    }
     showToast('Account removed', 'info');
     loadAccounts();
     loadStatus();
@@ -1606,7 +1680,30 @@ async function deleteAccount(accId) {
 async function loadGroups() {
   try {
     const res = await fetch('/api/groups');
-    const groups = await res.json();
+    let groups = [];
+    if (res.ok) {
+      groups = await res.json();
+    }
+    if (!Array.isArray(groups)) groups = [];
+
+    const cachedGroups = getTenantCachedData('groups');
+    if (groups.length > 0) {
+      setTenantCachedData('groups', groups);
+    } else if (cachedGroups && cachedGroups.length > 0) {
+      groups = cachedGroups;
+      // Auto-restore groups to backend so background poster has them
+      try {
+        const targets = cachedGroups.map(g => g.target).filter(Boolean).join('\n');
+        if (targets) {
+          fetch('/api/groups', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ raw_text: targets })
+          }).catch(() => {});
+        }
+      } catch (e) {}
+    }
+
     const box = document.getElementById('groups-list-box');
     document.getElementById('groups-list-count').textContent = groups.length;
 
@@ -1667,6 +1764,7 @@ async function clearGroups() {
   if (!confirm('Are you sure you want to remove all target groups?')) return;
   try {
     const res = await fetch('/api/groups', { method: 'DELETE' });
+    setTenantCachedData('groups', []);
     showToast('Target groups cleared', 'info');
     loadGroups();
     loadStatus();

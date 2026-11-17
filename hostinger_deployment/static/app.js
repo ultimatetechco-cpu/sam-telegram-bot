@@ -44,7 +44,6 @@ window.fetch = async function(url, options = {}) {
   if (res.status === 401 && typeof url === 'string' && !url.includes('/api/auth/login') && !url.includes('/api/auth/register')) {
     stopStatusPolling();
     localStorage.removeItem('auth_token');
-    const wasAuthed = !!currentUser;
     currentUser = null;
     updateUserUI();
     const modal = document.getElementById('modal-auth');
@@ -52,6 +51,10 @@ window.fetch = async function(url, options = {}) {
     // Only open auth modal if not already open (prevents resetting the registration form)
     if (!isModalOpen) {
       openAuthModal('login');
+    }
+  } else if (res.ok && typeof url === 'string' && options.method && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(options.method.toUpperCase())) {
+    if (/\/(accounts|groups|posts|draft|config|scheduler)/.test(url) && !url.includes('/vault/')) {
+      scheduleBrowserSnapshotSync();
     }
   }
   return res;
@@ -70,6 +73,109 @@ let selectedAccountId = 'all';
 let selectedPostIds = 'all';
 let adminTargetUserId = null;
 let statusPollingInterval = null;
+let _browserSnapshotSyncTimer = null;
+let _vaultRestoreAttemptedForUser = null;
+
+function getUserSnapshotKey() {
+  if (!currentUser) return null;
+  const idPart = (currentUser.email || currentUser.username || currentUser.id || '').toLowerCase().trim();
+  return idPart ? `tg_vault_snap_${idPart}` : null;
+}
+
+// ----------------- TENANT PERMANENT CLIENT-SIDE CACHE -----------------
+function getTenantCacheKey(entity) {
+  if (!currentUser) return null;
+  const uid = (currentUser.id || currentUser.email || currentUser.username || 'user').toLowerCase().trim();
+  return `tg_cache_${entity}_${uid}`;
+}
+
+function getTenantCachedData(entity) {
+  const k = getTenantCacheKey(entity);
+  if (!k) return null;
+  try {
+    const raw = localStorage.getItem(k);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    return Array.isArray(data) ? data : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function setTenantCachedData(entity, data) {
+  const k = getTenantCacheKey(entity);
+  if (!k || !Array.isArray(data)) return;
+  try {
+    localStorage.setItem(k, JSON.stringify(data));
+  } catch (e) {}
+}
+
+function scheduleBrowserSnapshotSync() {
+  if (!currentUser) return;
+  if (_browserSnapshotSyncTimer) clearTimeout(_browserSnapshotSyncTimer);
+  _browserSnapshotSyncTimer = setTimeout(() => {
+    syncMyVaultSnapshot();
+  }, 1200);
+}
+
+async function syncMyVaultSnapshot() {
+  const key = getUserSnapshotKey();
+  if (!key || !currentUser) return;
+  try {
+    const res = await fetch('/api/vault/my_snapshot');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data && data.snapshot) {
+      localStorage.setItem(key, JSON.stringify({
+        blob: data.snapshot,
+        has_data: !!data.has_data,
+        accounts_count: data.accounts_count || 0,
+        groups_count: data.groups_count || 0,
+        posts_count: data.posts_count || 0,
+        saved_at: Date.now()
+      }));
+    }
+  } catch (e) {}
+}
+
+async function tryAutoRestoreFromBrowserSnapshot(statusData) {
+  if (!currentUser || !statusData) return;
+  const uid = currentUser.id;
+  if (_vaultRestoreAttemptedForUser === uid) return;
+  _vaultRestoreAttemptedForUser = uid;
+
+  const key = getUserSnapshotKey();
+  if (!key) return;
+
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) {
+      syncMyVaultSnapshot();
+      return;
+    }
+    const saved = JSON.parse(raw);
+    const serverLooksEmpty = (statusData.total_accounts === 0 && statusData.total_groups === 0 && statusData.total_posts <= 3);
+
+    if (serverLooksEmpty && saved && saved.has_data && saved.blob) {
+      const res = await fetch('/api/vault/restore_my_snapshot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ snapshot: saved.blob })
+      });
+      if (res.ok) {
+        const restoreRes = await res.json();
+        if (restoreRes.status === 'restored') {
+          showToast(`Restored ${restoreRes.accounts_count} account(s), ${restoreRes.groups_count} group(s) & ${restoreRes.posts_count} post(s)!`, 'success');
+          loadAllData();
+          return;
+        }
+      }
+    }
+  } catch (e) {}
+
+  // Keep snapshot up to date with latest server state
+  syncMyVaultSnapshot();
+}
 
 function startStatusPolling() {
   if (statusPollingInterval) return;
@@ -253,6 +359,19 @@ async function loadStatus() {
       document.getElementById('stat-stats').textContent = `${data.stats.total_sent} / ${data.stats.total_failed}`;
       document.getElementById('stat-lastrun').textContent = data.stats.last_run_time ? `Last: ${data.stats.last_run_time}` : 'Never run';
     }
+
+    // Show Hostinger update warning banner to Admin if vault_pull/vault_push returned 404
+    const vaultBanner = document.getElementById('cloud-vault-alert-banner');
+    if (vaultBanner) {
+      if (currentUser && currentUser.role === 'admin' && data.vault_status && data.vault_status.needs_hostinger_upload) {
+        vaultBanner.classList.remove('hidden');
+      } else {
+        vaultBanner.classList.add('hidden');
+      }
+    }
+
+    // Auto-restore encrypted browser snapshot if backend restarted without Hostinger Vault
+    tryAutoRestoreFromBrowserSnapshot(data);
   } catch (e) {
     console.error('Status fetch error:', e);
   }
@@ -590,7 +709,31 @@ function updateSchedulePostsBadge() {
 async function loadPosts() {
   try {
     const res = await fetch('/api/posts');
-    const posts = await res.json();
+    let posts = [];
+    if (res.ok) {
+      posts = await res.json();
+    }
+    if (!Array.isArray(posts)) posts = [];
+
+    const cachedPosts = getTenantCachedData('posts');
+    const isDefault = posts.length <= 3 && !posts.some(p => p.times_posted || p.custom_emojis_count || p.has_media || (p.text && !p.text.includes('Welcome Announcement')));
+
+    if (posts.length > 0 && !isDefault) {
+      setTenantCachedData('posts', posts);
+    } else if (cachedPosts && cachedPosts.length > 0 && (isDefault || !posts.length)) {
+      posts = cachedPosts;
+      // Auto-restore custom posts to backend so scheduler has them
+      try {
+        for (const cp of cachedPosts) {
+          fetch('/api/posts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(cp)
+          }).catch(() => {});
+        }
+      } catch (e) {}
+    }
+
     allPosts = posts;
 
     const container = document.getElementById('post-pills-container');
@@ -803,6 +946,11 @@ async function deleteCurrentPost() {
   try {
     const res = await fetch(`/api/posts/${currentPost.id}`, { method: 'DELETE' });
     const data = await res.json();
+    const cached = getTenantCachedData('posts');
+    if (cached) {
+      const updated = cached.filter(p => p.id !== currentPost.id);
+      setTenantCachedData('posts', updated);
+    }
     showToast('Post removed from campaign', 'info');
     currentPost = null;
     await loadPosts();
@@ -1186,7 +1334,19 @@ async function importSelectedScannedGroups() {
 async function loadAccounts() {
   try {
     const res = await fetch('/api/accounts');
-    const accounts = await res.json();
+    let accounts = [];
+    if (res.ok) {
+      accounts = await res.json();
+    }
+    if (!Array.isArray(accounts)) accounts = [];
+
+    const cachedAccounts = getTenantCachedData('accounts');
+    if (accounts.length > 0) {
+      setTenantCachedData('accounts', accounts);
+    } else if (cachedAccounts && cachedAccounts.length > 0) {
+      accounts = cachedAccounts;
+    }
+
     allAccounts = accounts;
     populateAccountSelector(accounts);
     populatePostAccountAssignOptions();
@@ -1502,6 +1662,11 @@ async function deleteAccount(accId) {
   try {
     const res = await fetch(`/api/accounts/${accId}`, { method: 'DELETE' });
     const data = await res.json();
+    const cached = getTenantCachedData('accounts');
+    if (cached) {
+      const updated = cached.filter(a => a.id !== accId);
+      setTenantCachedData('accounts', updated);
+    }
     showToast('Account removed', 'info');
     loadAccounts();
     loadStatus();
@@ -1515,7 +1680,30 @@ async function deleteAccount(accId) {
 async function loadGroups() {
   try {
     const res = await fetch('/api/groups');
-    const groups = await res.json();
+    let groups = [];
+    if (res.ok) {
+      groups = await res.json();
+    }
+    if (!Array.isArray(groups)) groups = [];
+
+    const cachedGroups = getTenantCachedData('groups');
+    if (groups.length > 0) {
+      setTenantCachedData('groups', groups);
+    } else if (cachedGroups && cachedGroups.length > 0) {
+      groups = cachedGroups;
+      // Auto-restore groups to backend so background poster has them
+      try {
+        const targets = cachedGroups.map(g => g.target).filter(Boolean).join('\n');
+        if (targets) {
+          fetch('/api/groups', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ raw_text: targets })
+          }).catch(() => {});
+        }
+      } catch (e) {}
+    }
+
     const box = document.getElementById('groups-list-box');
     document.getElementById('groups-list-count').textContent = groups.length;
 
@@ -1576,6 +1764,7 @@ async function clearGroups() {
   if (!confirm('Are you sure you want to remove all target groups?')) return;
   try {
     const res = await fetch('/api/groups', { method: 'DELETE' });
+    setTenantCachedData('groups', []);
     showToast('Target groups cleared', 'info');
     loadGroups();
     loadStatus();
@@ -1693,7 +1882,7 @@ function clearConsoleView() {
 // ----------------- AUTH & USER PORTAL -------------------
 // ========================================================
 
-async function checkCurrentUser() {
+async function checkCurrentUser(retryCount = 0) {
   const token = localStorage.getItem('auth_token');
   if (!token) {
     currentUser = null;
@@ -1710,17 +1899,27 @@ async function checkCurrentUser() {
       updateUserUI();
       closeAuthModal();
       return true;
-    } else {
+    } else if (res.status === 401 || res.status === 403) {
       localStorage.removeItem('auth_token');
       currentUser = null;
       updateUserUI();
       openAuthModal('login');
       return false;
+    } else if (retryCount < 1) {
+      // Backend waking up (502/503/504): wait briefly and retry WITHOUT erasing token
+      showToast('Backend waking up, reconnecting...', 'info');
+      await new Promise(r => setTimeout(r, 2500));
+      return await checkCurrentUser(retryCount + 1);
+    } else {
+      showToast('Backend temporarily reconnecting. Please refresh in a moment.', 'warning');
+      return false;
     }
   } catch (e) {
-    currentUser = null;
-    updateUserUI();
-    openAuthModal('login');
+    if (retryCount < 1) {
+      await new Promise(r => setTimeout(r, 2500));
+      return await checkCurrentUser(retryCount + 1);
+    }
+    showToast('Network reconnecting to backend...', 'warning');
     return false;
   }
 }
@@ -1993,6 +2192,7 @@ async function submitLogin(e) {
     if (data.status === 'direct_login' && data.token) {
       localStorage.setItem('auth_token', data.token);
       currentUser = data.user;
+      _vaultRestoreAttemptedForUser = null;
       switchTab('schedule');
       updateUserUI();
       closeAuthModal();
@@ -2080,6 +2280,7 @@ async function verifyLoginOtp() {
 
     localStorage.setItem('auth_token', data.token);
     currentUser = data.user;
+    _vaultRestoreAttemptedForUser = null;
     backToLoginStep1();
     switchTab('schedule');
     updateUserUI();
@@ -2326,6 +2527,7 @@ async function handleLogout() {
   } catch (e) {}
   localStorage.removeItem('auth_token');
   currentUser = null;
+  _vaultRestoreAttemptedForUser = null;
   
   // Wipe all session state & admin DOM tables
   const adminTbody = document.getElementById('admin-users-table-body');

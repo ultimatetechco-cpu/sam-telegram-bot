@@ -345,6 +345,186 @@ curl_close($ch);
 $resHeaders = substr($response, 0, $headerSize);
 $resBody = substr($response, $headerSize);
 
+// ========================================================
+// Persistent Data Vault Interceptor (Hostinger Permanent Storage)
+// Guarantees accounts, groups, and posts never reset even if Render restarts
+// ========================================================
+$vaultDir = __DIR__ . '/storage_vault';
+
+function _get_uid_from_auth_header($authH) {
+    if (empty($authH)) return null;
+    $tok = trim(str_ireplace('Bearer ', '', $authH));
+    if (empty($tok)) return null;
+    if (strpos($tok, 'v1.') === 0) {
+        $parts = explode('.', $tok);
+        if (count($parts) === 3) {
+            $pad = str_repeat('=', (4 - strlen($parts[1]) % 4) % 4);
+            $raw = base64_decode(strtr($parts[1], '-_', '+/') . $pad);
+            $p = json_decode($raw, true);
+            if (!empty($p['uid'])) return $p['uid'];
+        }
+    }
+    $mapFile = __DIR__ . '/storage_vault/token_map.json';
+    if (file_exists($mapFile)) {
+        $map = @json_decode(@file_get_contents($mapFile), true);
+        if (is_array($map) && !empty($map[$tok])) return $map[$tok];
+    }
+    return null;
+}
+
+if ($httpCode >= 200 && $httpCode < 300) {
+    // 1. Capture user ID upon successful login
+    if (strpos($route, 'auth/login') !== false) {
+        $loginData = @json_decode($resBody, true);
+        if (!empty($loginData['token']) && !empty($loginData['user']['id'])) {
+            if (!is_dir($vaultDir)) { @mkdir($vaultDir, 0755, true); }
+            $mapFile = $vaultDir . '/token_map.json';
+            $map = file_exists($mapFile) ? (@json_decode(@file_get_contents($mapFile), true) ?: []) : [];
+            $map[$loginData['token']] = $loginData['user']['id'];
+            $map[$loginData['token'] . '_user'] = $loginData['user'];
+            @file_put_contents($mapFile, json_encode($map, JSON_PRETTY_PRINT));
+        }
+    }
+
+    $currentUid = _get_uid_from_auth_header($authHeader) ?: 'admin';
+    $userVaultDir = $vaultDir . '/users/' . $currentUid;
+
+    // 2. ACCOUNTS INTERCEPTOR
+    if ($route === 'accounts' && $method === 'GET') {
+        $accs = @json_decode($resBody, true);
+        $accCacheFile = $userVaultDir . '/accounts.json';
+        if (is_array($accs) && count($accs) > 0) {
+            if (!is_dir($userVaultDir)) { @mkdir($userVaultDir, 0755, true); }
+            @file_put_contents($accCacheFile, $resBody);
+        } elseif ((!is_array($accs) || count($accs) === 0) && file_exists($accCacheFile)) {
+            $cachedAccs = @file_get_contents($accCacheFile);
+            $decodedCached = @json_decode($cachedAccs, true);
+            if (is_array($decodedCached) && count($decodedCached) > 0) {
+                $resBody = $cachedAccs;
+            }
+        }
+    } elseif (strpos($route, 'accounts/') === 0 && $method === 'DELETE') {
+        $accCacheFile = $userVaultDir . '/accounts.json';
+        $parts = explode('/', $route);
+        $delId = end($parts);
+        if (file_exists($accCacheFile) && !empty($delId)) {
+            $existing = @json_decode(@file_get_contents($accCacheFile), true);
+            if (is_array($existing)) {
+                $existing = array_values(array_filter($existing, function($a) use ($delId) {
+                    return ($a['id'] ?? '') !== $delId;
+                }));
+                @file_put_contents($accCacheFile, json_encode($existing, JSON_PRETTY_PRINT));
+            }
+        }
+    }
+
+    // 3. GROUPS INTERCEPTOR
+    if ($route === 'groups' && $method === 'GET') {
+        $grps = @json_decode($resBody, true);
+        $grpCacheFile = $userVaultDir . '/groups.json';
+        if (is_array($grps) && count($grps) > 0) {
+            if (!is_dir($userVaultDir)) { @mkdir($userVaultDir, 0755, true); }
+            @file_put_contents($grpCacheFile, $resBody);
+        } elseif ((!is_array($grps) || count($grps) === 0) && file_exists($grpCacheFile)) {
+            $cachedGrps = @file_get_contents($grpCacheFile);
+            $decodedCached = @json_decode($cachedGrps, true);
+            if (is_array($decodedCached) && count($decodedCached) > 0) {
+                $resBody = $cachedGrps;
+            }
+        }
+    } elseif ($route === 'groups' && in_array($method, ['POST', 'PUT'])) {
+        $grps = @json_decode($resBody, true);
+        $grpCacheFile = $userVaultDir . '/groups.json';
+        if (is_array($grps) && count($grps) > 0) {
+            if (!is_dir($userVaultDir)) { @mkdir($userVaultDir, 0755, true); }
+            @file_put_contents($grpCacheFile, $resBody);
+        }
+    } elseif ($route === 'groups' && $method === 'DELETE') {
+        $grpCacheFile = $userVaultDir . '/groups.json';
+        if (file_exists($grpCacheFile)) {
+            @file_put_contents($grpCacheFile, '[]');
+        }
+    }
+
+    // 4. POSTS INTERCEPTOR
+    if ($route === 'posts' && $method === 'GET') {
+        $posts = @json_decode($resBody, true);
+        $postCacheFile = $userVaultDir . '/posts.json';
+        $isDefault = is_array($posts) && count($posts) <= 3;
+        if (is_array($posts) && count($posts) > 0 && !$isDefault) {
+            if (!is_dir($userVaultDir)) { @mkdir($userVaultDir, 0755, true); }
+            @file_put_contents($postCacheFile, $resBody);
+        } elseif ($isDefault && file_exists($postCacheFile)) {
+            $cachedPosts = @file_get_contents($postCacheFile);
+            $decodedCached = @json_decode($cachedPosts, true);
+            if (is_array($decodedCached) && count($decodedCached) > count($posts)) {
+                $resBody = $cachedPosts;
+            }
+        }
+    } elseif (strpos($route, 'posts') === 0 && in_array($method, ['POST', 'PUT'])) {
+        $pData = @json_decode($resBody, true);
+        if (!empty($pData['id'])) {
+            $postCacheFile = $userVaultDir . '/posts.json';
+            $existing = file_exists($postCacheFile) ? (@json_decode(@file_get_contents($postCacheFile), true) ?: []) : [];
+            $found = false;
+            foreach ($existing as &$ep) {
+                if (($ep['id'] ?? '') === $pData['id']) {
+                    $ep = array_merge($ep, $pData);
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) { $existing[] = $pData; }
+            if (!is_dir($userVaultDir)) { @mkdir($userVaultDir, 0755, true); }
+            @file_put_contents($postCacheFile, json_encode($existing, JSON_PRETTY_PRINT));
+        }
+    } elseif (strpos($route, 'posts/') === 0 && $method === 'DELETE') {
+        $postCacheFile = $userVaultDir . '/posts.json';
+        $parts = explode('/', $route);
+        $delId = end($parts);
+        if (file_exists($postCacheFile) && !empty($delId)) {
+            $existing = @json_decode(@file_get_contents($postCacheFile), true);
+            if (is_array($existing)) {
+                $existing = array_values(array_filter($existing, function($p) use ($delId) {
+                    return ($p['id'] ?? '') !== $delId;
+                }));
+                @file_put_contents($postCacheFile, json_encode($existing, JSON_PRETTY_PRINT));
+            }
+        }
+    }
+
+    // 5. STATUS ENRICHMENT
+    if ($route === 'status' && $method === 'GET') {
+        $stData = @json_decode($resBody, true);
+        if (is_array($stData)) {
+            $accCache = $userVaultDir . '/accounts.json';
+            $grpCache = $userVaultDir . '/groups.json';
+            $postCache = $userVaultDir . '/posts.json';
+            if (isset($stData['total_accounts']) && $stData['total_accounts'] === 0 && file_exists($accCache)) {
+                $sAccs = @json_decode(@file_get_contents($accCache), true);
+                if (is_array($sAccs) && count($sAccs) > 0) {
+                    $stData['total_accounts'] = count($sAccs);
+                    $stData['active_accounts'] = count(array_filter($sAccs, function($a) { return ($a['is_active'] ?? true) !== false; }));
+                }
+            }
+            if (isset($stData['total_groups']) && $stData['total_groups'] === 0 && file_exists($grpCache)) {
+                $sGrps = @json_decode(@file_get_contents($grpCache), true);
+                if (is_array($sGrps) && count($sGrps) > 0) {
+                    $stData['total_groups'] = count($sGrps);
+                }
+            }
+            if (file_exists($postCache)) {
+                $sPosts = @json_decode(@file_get_contents($postCache), true);
+                if (is_array($sPosts) && count($sPosts) > 3) {
+                    $stData['total_posts'] = count($sPosts);
+                    $stData['active_posts'] = count(array_filter($sPosts, function($p) { return ($p['is_active'] ?? true) !== false; }));
+                }
+            }
+            $resBody = json_encode($stData);
+        }
+    }
+}
+
 // Send CORS and Status
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS, PATCH");
