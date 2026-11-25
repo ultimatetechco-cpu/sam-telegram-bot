@@ -13,8 +13,10 @@ venv/
 env/
 ho/
 
-# Session journals
+# Session journals and SQLite session binaries
+*.session
 *.session-journal
+sessions/*.session
 
 # Vault and user runtime data
 storage_vault/*
