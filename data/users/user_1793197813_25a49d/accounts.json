@@ -1,0 +1,20 @@
+[
+  {
+    "id": "acc_user_1793197813_25a49d_8643221025",
+    "user_id": "8643221025",
+    "owner_user_id": "user_1793197813_25a49d",
+    "first_name": "Forex Media Agency",
+    "last_name": "",
+    "username": "PeterFOREXMediaAgency",
+    "phone": "+919463266834",
+    "api_id": 38402690,
+    "api_hash": "312e8ec72296e9ae27415de6eb52c0cf",
+    "session_name": "session_user_1793197813_25a49d_8643221025",
+    "string_session": "1BVtsOIUBuzEVtP2uGE-ePOQsG-UI-kiWFDvtcUN6GliP7be-pY-vnfNwPbtbfmtaGwXha0GcB6wHMuavX2eoviiYFCnfUADhruWv5VyfDz72VGllXGeWBJ7rgNQtfHzqkRJEa3AqDk5jB9p2XdGQaUsBNUTKPc-DEEvB-axFmng00Di_cxat-MUNcWvUbgxGNM1LDpfQDImnWa_vonHrGPlTSTUKhVp7jMpIEbOm86DNUHkn_RDTgIV6Q73oCVNs5D1WIwsJxnqQKhflBXaWRtna19nswzyR0EjUfZcCJvDQRxOr-APsRIqXTNop0RijZWNYRdGPzzS1nBKx11tOwilh-Brv_zE=",
+    "is_premium": false,
+    "is_active": true,
+    "status": "Ready",
+    "last_used": null,
+    "flood_wait_until": null
+  }
+]

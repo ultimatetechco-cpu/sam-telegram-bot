@@ -13,7 +13,8 @@
     "is_active": true,
     "status": "Ready",
     "last_used": null,
-    "flood_wait_until": null
+    "flood_wait_until": null,
+    "string_session": "1BVtsOHcBu7LAMYLei8qYno6eohHgQN7GmOp4WXmhVuE_Pmwir_OQ_5okkU0uufQSCWzzOJIOI2D--zyISG2C11lnN2SsUJ3f9uVgt0jslVy5lXgASsuqc9OFYTALro0CsS-HLOqt0SHr2Oebht9ydLMNgTWit-OnIs9zGxEFybrfRWTYxjQzXUPjsFu6VPzelZzeCGaRLPJIkljjA6P8cbk10vpNmbgPMCJjDfGnuEMzkf6t42dkVD7fXn7YVTK4sRUlEodUdAl5ZjwI8hjZ_btSRZ7xoY53bSw3j_y9RIVe77IWLprsO9US3fsDmafq0hPv9p7L9s9Ii5i5mkihoAK2AQOXPEc="
   },
   {
     "id": "acc_8047637445",
@@ -29,6 +30,7 @@
     "is_active": true,
     "status": "Ready",
     "last_used": null,
-    "flood_wait_until": 1792599884.7016866
+    "flood_wait_until": 1792599884.7016866,
+    "string_session": "1BVtsOIEBuyR0e81ZkuQDGnBL3_XcJtGnu9rQ3qnXNl1kLmZPJq0AGkKbuPkdv0ctM8ZRl2-_49MkC4ckLXHbVb6Cf8ocoQ3vMJJYJ1rtJVh1kB1JwdbTCsfWmZBK6KGztr8eRaXhjAW7y5VCeR5tW7hbhLoVKBVoK1FryU92u2rQXM6z0uyHE_JIMiZEI06fYraJn7oVy6wZuz4BeD-8_pMqNnbbhGnL9emO4TzArFJFP8zwFpFoc2Kg7cKfrPLYdUNmVJl8kgUDNXhlOWUXRAh179__F3j5XHi-JGP9WJLYWFDkrtzDbyIhhwBBOskGDZ0QxTCF0sCk4WAjOWlEXpg1k6iLt-U="
   }
 ]

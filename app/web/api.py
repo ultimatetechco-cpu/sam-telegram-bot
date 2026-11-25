@@ -58,6 +58,7 @@ from app.auth_mgr import (
     admin_delete_user,
     get_all_users_for_admin,
     admin_change_password,
+    user_change_password,
     admin_update_email,
     create_signed_token,
     PLANS
@@ -617,6 +618,45 @@ async def api_admin_delete(user_id: str, admin: Dict[str, Any] = Depends(get_adm
         raise HTTPException(status_code=404, detail="User not found or cannot delete Super Admin")
     add_log("WARNING", f"Super Admin deleted user {user_id}", user_id="admin")
     return {"status": "success", "message": "User deleted."}
+
+class AdminPasswordRequest(BaseModel):
+    new_password: str
+
+@app.post("/api/admin/users/{user_id}/password")
+async def api_admin_reset_user_password(user_id: str, req: AdminPasswordRequest, admin: Dict[str, Any] = Depends(get_admin_user)):
+    try:
+        if len(req.new_password) < 6:
+            raise HTTPException(status_code=400, detail="New password must be at least 6 characters.")
+        success = admin_change_password(user_id, req.new_password)
+        if not success:
+            raise HTTPException(status_code=404, detail="User not found.")
+        target_user = get_user_by_id(user_id)
+        uname = target_user.get("username", user_id) if target_user else user_id
+        add_log("SUCCESS", f"Super Admin reset password for user @{uname}", user_id="admin")
+        return {"status": "success", "message": f"Password for user @{uname} has been updated successfully."}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+class UserChangePasswordRequest(BaseModel):
+    old_password: str
+    new_password: str
+
+@app.post("/api/user/change_password")
+async def api_user_change_password(req: UserChangePasswordRequest, current_user: Dict[str, Any] = Depends(get_current_user)):
+    try:
+        if len(req.new_password) < 6:
+            raise HTTPException(status_code=400, detail="New password must be at least 6 characters.")
+        user_change_password(current_user["id"], req.old_password, req.new_password)
+        add_log("INFO", f"User @{current_user.get('username')} changed their password.", user_id=current_user["id"])
+        return {"status": "success", "message": "Your password has been changed successfully! Please use your new password next time you sign in."}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 class EmailConfigModel(BaseModel):
     enabled: bool = True

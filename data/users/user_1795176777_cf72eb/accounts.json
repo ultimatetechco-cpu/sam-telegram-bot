@@ -1,0 +1,20 @@
+[
+  {
+    "id": "acc_user_1795176777_cf72eb_1056549064",
+    "user_id": "1056549064",
+    "owner_user_id": "user_1795176777_cf72eb",
+    "first_name": "SamDrexler | INFINET",
+    "last_name": "",
+    "username": "SamDrexlerINFINET",
+    "phone": "+918968266487",
+    "api_id": 27971329,
+    "api_hash": "d5430f11efb88f9afb8989f77fc9c56f",
+    "session_name": "session_user_1795176777_cf72eb_1056549064",
+    "string_session": "1BVtsOIUBu4LIQX-hOzGB2bFAEh9--hVQPXXWYZ0kqPoCqjKK-E3XlF1T3UH6JCDOfx8f1OedJ2KD0lLakOgfsw_b7jY5pxmJBxVG0x8KUYiQz0vDSYhcAoeGieh0oUp0aKcfo_4QR9WKNeKGhg0jgZ8jwSr9cbUa0x-PO-VQZRebEljkoGzTA8jj5Owyv0EhcZwoF3q0seaZ5r_3AhpVJMG3qHmYJaQhP9f6gqJcpTPfL2i0iIHJzt8LVlrPUtCauFB9uBrmKh2nen7xh3uERFoN1yWsl6KuyqQ89i-R13MD3zayh7CUoUDAjFJL3BNDbDX7Mcv9VlnEjbPN1n8pWdPPTlSgO48=",
+    "is_premium": false,
+    "is_active": true,
+    "status": "Ready",
+    "last_used": null,
+    "flood_wait_until": 1795539645.1129518
+  }
+]

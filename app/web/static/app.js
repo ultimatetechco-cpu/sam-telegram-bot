@@ -2668,6 +2668,10 @@ async function loadAdminData() {
           ${u.status === 'active' ? '<i class="fa-solid fa-pause text-amber-400"></i>' : '<i class="fa-solid fa-play text-emerald-400"></i>'}
         </button>`;
 
+        const resetPwdBtn = `<button onclick="adminOpenResetPwd('${u.id}', '${u.username}')" class="px-2 py-1 rounded bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 text-[10px] font-semibold transition" title="Reset User Password">
+          <i class="fa-solid fa-key"></i>
+        </button>`;
+
         const deleteBtn = `<button onclick="adminDeleteUser('${u.id}', '${u.username}')" class="px-2 py-1 rounded bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-[10px]" title="Delete Tenant">
           <i class="fa-solid fa-trash"></i>
         </button>`;
@@ -2677,6 +2681,7 @@ async function loadAdminData() {
             ${approveBtn}
             ${extendBtn}
             ${planSelect}
+            ${resetPwdBtn}
             ${toggleBtn}
             ${deleteBtn}
           </div>
@@ -2765,6 +2770,116 @@ async function confirmAdminApprove() {
   } finally {
     btn.disabled = false;
     btn.innerHTML = '<i class="fa-solid fa-check"></i> <span>Activate 1 Month</span>';
+  }
+}
+
+// ----------------- ADMIN RESET USER PASSWORD -----------------
+let adminResetTargetUserId = null;
+
+function adminOpenResetPwd(userId, username) {
+  adminResetTargetUserId = userId;
+  document.getElementById('reset-pwd-modal-username').textContent = '@' + username;
+  document.getElementById('reset-pwd-new-val').value = '';
+  const modal = document.getElementById('modal-admin-reset-pwd');
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function closeAdminResetPwdModal() {
+  adminResetTargetUserId = null;
+  const modal = document.getElementById('modal-admin-reset-pwd');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+}
+
+function generateRandomPassword(targetInputId) {
+  const chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$%';
+  let pwd = '';
+  for (let i = 0; i < 10; i++) {
+    pwd += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  const el = document.getElementById(targetInputId);
+  if (el) el.value = pwd;
+}
+
+async function confirmAdminResetPwd() {
+  if (!adminResetTargetUserId) return;
+  const newPass = document.getElementById('reset-pwd-new-val').value.trim();
+  if (!newPass || newPass.length < 6) {
+    showToast('Password must be at least 6 characters long.', 'error');
+    return;
+  }
+  const btn = document.getElementById('btn-confirm-reset-pwd');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+  try {
+    const res = await fetch(`/api/admin/users/${adminResetTargetUserId}/password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ new_password: newPass })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || 'Failed to update password');
+    showToast(data.message || 'Password updated successfully!', 'success');
+    closeAdminResetPwdModal();
+  } catch (err) {
+    showToast(err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> <span>Update Password</span>';
+  }
+}
+
+// ----------------- USER CHANGE OWN PASSWORD -----------------
+function openChangePasswordModal() {
+  document.getElementById('user-current-pwd').value = '';
+  document.getElementById('user-new-pwd').value = '';
+  document.getElementById('user-confirm-pwd').value = '';
+  const modal = document.getElementById('modal-user-change-pwd');
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function closeChangePasswordModal() {
+  const modal = document.getElementById('modal-user-change-pwd');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+}
+
+async function confirmUserChangePassword() {
+  const oldPwd = document.getElementById('user-current-pwd').value;
+  const newPwd = document.getElementById('user-new-pwd').value;
+  const confirmPwd = document.getElementById('user-confirm-pwd').value;
+  if (!oldPwd) {
+    showToast('Please enter your current password.', 'error');
+    return;
+  }
+  if (!newPwd || newPwd.length < 6) {
+    showToast('New password must be at least 6 characters long.', 'error');
+    return;
+  }
+  if (newPwd !== confirmPwd) {
+    showToast('New passwords do not match.', 'error');
+    return;
+  }
+  const btn = document.getElementById('btn-confirm-user-pwd');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+  try {
+    const res = await fetch('/api/user/change_password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ old_password: oldPwd, new_password: newPwd })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || 'Failed to change password');
+    showToast(data.message || 'Password changed successfully!', 'success');
+    closeChangePasswordModal();
+  } catch (err) {
+    showToast(err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> <span>Save Password</span>';
   }
 }
 

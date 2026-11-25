@@ -512,3 +512,18 @@ def admin_update_email(user_id: str, new_email: str) -> Dict[str, Any]:
             save_users(users)
             return sanitize_user(users[i])
     raise ValueError("User not found.")
+
+def user_change_password(user_id: str, old_password: str, new_password: str) -> bool:
+    if len(new_password) < 6:
+        raise ValueError("New password must be at least 6 characters.")
+    users = load_users()
+    for i, u in enumerate(users):
+        if u["id"] == user_id:
+            if not verify_password(old_password, u["password_hash"], u["salt"]):
+                raise ValueError("Current password is incorrect.")
+            h, s = hash_password(new_password)
+            users[i]["password_hash"] = h
+            users[i]["salt"] = s
+            save_users(users)
+            return True
+    raise ValueError("User not found.")
