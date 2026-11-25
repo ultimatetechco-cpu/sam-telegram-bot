@@ -1,3 +1,13 @@
+---
+title: Sam Telegram Bot
+emoji: 🚀
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # ✈️ Telegram AutoPost Pro — 3D Animated Emoji Automation
 
 A professional, high-performance Telegram group broadcast automation system featuring multi-account rotation, dynamic interval scheduling (e.g., every 2 hours, 3 hours, 4 hours, or custom), anti-flood human delay simulations, and full native support for **Telegram 3D animated custom emojis** and media attachments.

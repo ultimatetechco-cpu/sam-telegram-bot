@@ -38,7 +38,7 @@ def main():
         save_draft(DEFAULT_DRAFT)
 
     host = os.environ.get("HOST", config.get("web_host", "0.0.0.0"))
-    port = int(os.environ.get("PORT", config.get("web_port", 8080)))
+    port = int(os.environ.get("PORT", config.get("web_port", 7860)))
 
     print_banner(host, port)
     add_log("INFO", f"Starting Telegram AutoPost Pro Web Server on port {port}...")
