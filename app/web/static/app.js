@@ -180,7 +180,11 @@ async function tryAutoRestoreFromBrowserSnapshot(statusData) {
 function startStatusPolling() {
   if (statusPollingInterval) return;
   loadStatus();
-  statusPollingInterval = setInterval(loadStatus, 2500);
+  statusPollingInterval = setInterval(() => {
+    if (!document.hidden) {
+      loadStatus();
+    }
+  }, 15000); // 15s interval: saves 85% bandwidth and never exhausts monthly limits
 }
 
 function stopStatusPolling() {
@@ -189,6 +193,19 @@ function stopStatusPolling() {
     statusPollingInterval = null;
   }
 }
+
+// Pause all background polling when the browser tab is minimized or hidden
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    stopStatusPolling();
+    stopLogPolling();
+  } else {
+    startStatusPolling();
+    if (activeTab === 'logs') {
+      startLogPolling();
+    }
+  }
+});
 
 // Initialization
 document.addEventListener('DOMContentLoaded', async () => {
@@ -277,7 +294,9 @@ function switchTab(tabId) {
     loadAdminData();
   }
   if (tabId === 'logs') {
-    loadLogs();
+    startLogPolling();
+  } else {
+    stopLogPolling();
   }
 }
 
@@ -1810,15 +1829,30 @@ async function loadLogs() {
   }
 }
 
-function initLogStream() {
-  // 1. Immediately fetch and display current logs
+function startLogPolling() {
+  if (logPollingTimer) return;
   loadLogs();
+  logPollingTimer = setInterval(() => {
+    if (!document.hidden && activeTab === 'logs') {
+      loadLogs();
+    }
+  }, 8000);
+}
 
-  // 2. Start continuous polling (every 4 seconds) to guarantee logs work even on PHP proxy where SSE is buffered
-  if (logPollingTimer) clearInterval(logPollingTimer);
-  logPollingTimer = setInterval(loadLogs, 4000);
+function stopLogPolling() {
+  if (logPollingTimer) {
+    clearInterval(logPollingTimer);
+    logPollingTimer = null;
+  }
+}
 
-  // 3. Also try EventSource if supported
+function initLogStream() {
+  // Only start polling if user is on logs tab
+  if (activeTab === 'logs') {
+    startLogPolling();
+  }
+
+  // EventSource stream for live logs
   if (logEventSource) {
     try { logEventSource.close(); } catch (e) {}
   }
